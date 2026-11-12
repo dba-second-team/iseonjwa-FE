@@ -1,0 +1,56 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('/fonts/PretendardVariable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 45 920;
+  font-display: swap;
+}
+
+:root {
+  --pink: #fb247f;
+  --surface: #2a2a2a;
+  --muted: #797979;
+  color-scheme: dark;
+  font-family: 'Pretendard', sans-serif;
+  color: #fff;
+  background: #1b1b1b;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+}
+
+::selection {
+  color: #fff;
+  background: #a7064b;
+}
+
+:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+button { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+
+@media (max-width: 599px) {
+  html { scrollbar-width: none; }
+  html::-webkit-scrollbar { width: 0; }
+}
