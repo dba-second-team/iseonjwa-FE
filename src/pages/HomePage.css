@@ -1,11 +1,6 @@
 /* Original frame coordinates are cropped by the 44px system status bar. */
-.page {
-  width: 100%;
-  max-width: 430px;
+.home-page {
   min-height: max(100svh, 995px);
-  margin-inline: auto;
-  container-type: inline-size;
-  background: #1b1b1b;
 }
 
 .ticket-header {
