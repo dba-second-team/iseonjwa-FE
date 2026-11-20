@@ -5,7 +5,7 @@ React, TypeScript, Vite 사용했습니다.
 ## 준비 사항
 
 - Git
-- Node.js 22.12.0 이상
+- Node.js 22.22.0 이상
 - npm
 
 ## 설치 및 실행
