@@ -38,6 +38,15 @@ button {
   font: inherit;
 }
 
+.page {
+  width: 100%;
+  max-width: 430px;
+  min-height: 100svh;
+  margin-inline: auto;
+  container-type: inline-size;
+  background: #1b1b1b;
+}
+
 ::selection {
   color: #fff;
   background: #a7064b;
