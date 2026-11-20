@@ -1,0 +1,23 @@
+.route-error-page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+}
+
+.route-error-title {
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.route-error-description {
+  color: var(--muted);
+}
+
+.route-error-link {
+  align-self: flex-start;
+  margin-top: 12px;
+  color: var(--pink);
+  font-weight: 600;
+}
