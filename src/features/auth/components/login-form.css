@@ -1,0 +1,49 @@
+.login-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-top: 44px;
+}
+
+.login-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.login-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+.login-error {
+  color: var(--danger);
+  font-size: 14px;
+}
+
+.login-signup {
+  margin-bottom: 8px;
+  font-size: 15px;
+}
+
+.login-signup a {
+  color: #fff;
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.login-admin {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  text-underline-offset: 3px;
+}
+
+.login-admin a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
