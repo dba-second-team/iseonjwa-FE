@@ -50,10 +50,10 @@
 }
 
 .login-admin {
-  margin-top: -8px;
-  margin-bottom: 8px;
+  margin-top: 4px;
   color: var(--muted);
   font-size: 13px;
+  text-underline-offset: 3px;
 }
 
 .login-admin a {
