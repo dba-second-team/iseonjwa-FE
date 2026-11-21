@@ -1,13 +1,18 @@
 import { cx } from '../../../utils/cx'
-import type { MyReservation, PaymentStatus } from '../types'
+import type { MyReservation, ReservationStatus } from '../types'
 import { formatDate, formatPrice, formatRoundAndCount } from '../utils/format'
 import './reservation-card.css'
 
+type StatusButton = { label: string; cancelable: boolean }
 
-const STATUS_BUTTON: Record<PaymentStatus, { label: string; cancelable: boolean }> = {
-  PAID: { label: '취소하기', cancelable: true },
-  CANCELED: { label: '환불 진행 중', cancelable: false },
-  REFUNDED: { label: '환불 완료', cancelable: false },
+/**
+ * 예매 상태 → 버튼. 상태를 하나 빠뜨리면 Record 타입 때문에 컴파일 에러가 남
+ * TODO: 백엔드에 paymentStatus가 생기면 CANCELED를 "환불 진행 중", "환불 완료"로 나눔
+ */
+const STATUS_BUTTON: Record<ReservationStatus, StatusButton> = {
+  CONFIRMED: { label: '취소하기', cancelable: true },
+  CANCELED: { label: '취소 완료', cancelable: false },
+  PENDING: { label: '결제 대기', cancelable: false },
 }
 
 type ReservationCardProps = {
@@ -15,7 +20,8 @@ type ReservationCardProps = {
 }
 
 export function ReservationCard({ reservation }: ReservationCardProps) {
-  const button: (typeof STATUS_BUTTON)[PaymentStatus] | undefined = STATUS_BUTTON[reservation.paymentStatus]
+  // 서버가 모르는 상태를 보내도 화면 전체가 죽지 않게 undefined 가능성을 열어 둠
+  const button: StatusButton | undefined = STATUS_BUTTON[reservation.status]
 
   const details = [
     { label: '예매일', value: formatDate(reservation.reservedAt) },
