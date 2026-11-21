@@ -53,7 +53,7 @@ export function LoginPage() {
     <main className="page login-page">
       <BackHeader />
 
-      <h1 className="login-title">안녕하세요!<br />아래 정보를 입력해 로그인해주세요.</h1>
+      <h1 className="login-title">안녕하세요!<br />아래 정보를 입력해 로그인해주세요</h1>
 
       <form className="login-form" noValidate onSubmit={handleSubmit}>
         <div className="login-fields">
