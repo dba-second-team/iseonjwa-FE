@@ -6,7 +6,7 @@ import { useAuth } from '../../lib/auth'
 import './login.css'
 
 const TITLES: Record<LoginMode, ReactNode> = {
-  member: <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요.</>,
+  member: <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요</>,
   admin: '관리자 로그인',
 }
 
@@ -19,7 +19,8 @@ export function LoginRoute({ mode = 'member' }: LoginRouteProps) {
   const location = useLocation()
   const { isLoggedIn, isAdmin } = useAuth()
 
-  const redirectTo = (location.state as { from?: string } | null)?.from ?? '/'
+  const state = location.state as { from?: string; signedUpEmail?: string } | null
+  const redirectTo = state?.from ?? '/'
 
   if (mode === 'admin' ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
 
@@ -27,7 +28,7 @@ export function LoginRoute({ mode = 'member' }: LoginRouteProps) {
     <main className="page login-page">
       <BackHeader />
       <h1 className="login-title">{TITLES[mode]}</h1>
-      <LoginForm mode={mode} onSuccess={() => navigate(redirectTo, { replace: true })} />
+          <LoginForm mode={mode} defaultEmail={state?.signedUpEmail} onSuccess={() => navigate(redirectTo, { replace: true })} />
     </main>
   )
 }
