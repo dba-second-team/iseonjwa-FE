@@ -1,8 +1,11 @@
 import { useEffect, useRef } from 'react'
+import { Link } from 'react-router'
 import profile from '../assets/reference/profile.svg'
+import { useAuth } from '../auth/useAuth'
 
 export function SideMenu({ onClose }: { onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null)
+  const { user } = useAuth()
 
   useEffect(() => {
     const dialog = ref.current
@@ -36,7 +39,11 @@ export function SideMenu({ onClose }: { onClose: () => void }) {
       </button>
       <div className="menu-profile">
         <img src={profile} width="46" height="46" alt="" />
-        <span className="menu-login-label">로그인하기</span>
+        {user ? (
+          <span className="menu-user-name">{user.name}님</span>
+        ) : (
+          <Link className="menu-login-label" to="/login">로그인하기</Link>
+        )}
       </div>
     </dialog>
   )
