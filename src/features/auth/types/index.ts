@@ -19,3 +19,7 @@ export type SignupResponse = {
   email: string
   name: string
 }
+
+export type CheckLoginIdResponse = {
+  available: boolean
+}

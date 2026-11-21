@@ -1,9 +1,9 @@
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { Button } from '../../../components/ui/button'
 import { TextField } from '../../../components/ui/text-field'
 import { ApiError, getErrorMessage } from '../../../lib/api-error'
 import { cx } from '../../../utils/cx'
-import { signupMember } from '../api/signup'
+import { checkLoginId, signupMember } from '../api/signup'
 import type { SignupRequest } from '../types'
 import { EMAIL_PATTERN, getPasswordChecks, PHONE_PATTERN } from '../utils/validation'
 import './signup-form.css'
@@ -12,7 +12,7 @@ type Field = keyof SignupRequest
 type FieldErrors = Partial<Record<Field, string>>
 
 const INITIAL_VALUES: SignupRequest = { name: '', email: '', password: '', phone: '' }
-
+const DUPLICATED_EMAIL_MESSAGE = '이미 가입한 이메일 주소예요.'
 const PASSWORD_RULES = [
   { key: 'length', label: '최소 8글자 이상' },
   { key: 'charTypes', label: '대문자, 소문자, 숫자, 특수문자 중 3종류 이상' },
@@ -37,15 +37,45 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  
+  const checkControllerRef = useRef<AbortController | null>(null)
 
   const passwordChecks = getPasswordChecks(values.password)
   const isFilled = Object.values(values).every(value => value.trim() !== '')
-  const canSubmit = isFilled && !isSubmitting
+  const canSubmit = isFilled && !isSubmitting && !errors.email
 
   function changeField(field: Field, value: string) {
+    if (field === 'email') cancelEmailCheck()
     setValues(prev => ({ ...prev, [field]: value }))
     setErrors(prev => ({ ...prev, [field]: undefined }))
     setFormError('')
+  }
+
+  function cancelEmailCheck() {
+    checkControllerRef.current?.abort()
+    checkControllerRef.current = null
+  }
+
+  async function handleEmailBlur() {
+    const email = values.email.trim()
+    if (email === '') return
+    if (!EMAIL_PATTERN.test(email)) {
+      setErrors(prev => ({ ...prev, email: '이메일 형식이 올바르지 않아요.' }))
+      return
+    }
+
+    cancelEmailCheck()
+    const controller = new AbortController()
+    checkControllerRef.current = controller
+
+    try {
+      const { available } = await checkLoginId(email, controller.signal)
+      if (!available) setErrors(prev => ({ ...prev, email: DUPLICATED_EMAIL_MESSAGE }))
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'AbortError') return
+    } finally {
+      if (checkControllerRef.current === controller) checkControllerRef.current = null
+    }
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -55,7 +85,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
     const request: SignupRequest = { ...values, name: values.name.trim(), email: values.email.trim() }
     const fieldErrors = validate(request)
     if (Object.keys(fieldErrors).length > 0) {
-      setErrors(fieldErrors)
+        setErrors({ email: DUPLICATED_EMAIL_MESSAGE })
       return
     }
 
@@ -86,6 +116,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           value={values.name}
           error={errors.name}
           onChange={event => changeField('name', event.target.value)}
+          onBlur={handleEmailBlur}
         />
         <TextField
           label="이메일 주소"
