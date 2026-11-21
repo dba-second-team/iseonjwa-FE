@@ -1,5 +1,5 @@
 import type { ComponentProps } from 'react'
-import { cx } from '../utils/cx'
+import { cx } from '../../utils/cx'
 import './Button.css'
 
 type ButtonProps = ComponentProps<'button'> & {
