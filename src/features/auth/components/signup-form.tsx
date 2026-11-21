@@ -6,14 +6,17 @@ import { cx } from '../../../utils/cx'
 import { checkLoginId, signupMember } from '../api/signup'
 import type { SignupRequest } from '../types'
 import { EMAIL_PATTERN, getPasswordChecks, PHONE_PATTERN } from '../utils/validation'
+import { useDebouncedValue } from '../../../hooks/use-debounced-value'
 import './signup-form.css'
 
 type Field = keyof SignupRequest
 type FieldErrors = Partial<Record<Field, string>>
 
 const INITIAL_VALUES: SignupRequest = { name: '', email: '', password: '', phone: '' }
-const EMAIL_CHECK_DELAY_MS = 300
+const INPUT_CHECK_DELAY_MS = 300
 const DUPLICATED_EMAIL_MESSAGE = '이미 가입한 이메일 주소예요.'
+const EMAIL_FORMAT_MESSAGE = '이메일 형식이 올바르지 않아요.'
+const PHONE_FORMAT_MESSAGE = '전화번호 형식이 올바르지 않아요.'
 const PASSWORD_RULES = [
   { key: 'length', label: '최소 8글자 이상' },
   { key: 'charTypes', label: '대문자, 소문자, 숫자, 특수문자 중 3종류 이상' },
@@ -38,10 +41,10 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [duplicatedEmail, setDuplicatedEmail] = useState('')
 
   const passwordChecks = getPasswordChecks(values.password)
   const isFilled = Object.values(values).every(value => value.trim() !== '')
-  const canSubmit = isFilled && !isSubmitting && !errors.email
 
   function changeField(field: Field, value: string) {
     setValues(prev => ({ ...prev, [field]: value }))
@@ -49,32 +52,38 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
     setFormError('')
   }
 
+  // 입력이 0.3초 멈췄을 때의 값
+  const email = values.email.trim()
+  const debouncedEmail = useDebouncedValue(email, INPUT_CHECK_DELAY_MS)
+  const debouncedPhone = useDebouncedValue(values.phone, INPUT_CHECK_DELAY_MS)
+
+  // 입력이 멈춘 값이 지금 값과 같을 때만 형식 에러를 보여 줌 (입력 중에는 숨김)
+  const emailFormatError =
+    debouncedEmail !== '' && debouncedEmail === email && !EMAIL_PATTERN.test(email) ? EMAIL_FORMAT_MESSAGE : undefined
+  const phoneFormatError =
+    debouncedPhone !== '' && debouncedPhone === values.phone && !PHONE_PATTERN.test(values.phone) ? PHONE_FORMAT_MESSAGE : undefined
+
+  const emailError = errors.email ?? (email !== '' && email === duplicatedEmail ? DUPLICATED_EMAIL_MESSAGE : emailFormatError)
+  const phoneError = errors.phone ?? phoneFormatError
+
+  const canSubmit = isFilled && !isSubmitting && !emailError && !phoneError
+
+  // 형식이 맞는 이메일로 입력이 멈추면 중복 확인
   useEffect(() => {
-    const email = values.email.trim()
-    if (!EMAIL_PATTERN.test(email)) return
+    if (!EMAIL_PATTERN.test(debouncedEmail)) return
 
     const controller = new AbortController()
-    const timer = setTimeout(async () => {
-      try {
-        const { available } = await checkLoginId(email, controller.signal)
-        if (!available) setErrors(prev => ({ ...prev, email: DUPLICATED_EMAIL_MESSAGE }))
-      } catch {
+    checkLoginId(debouncedEmail, controller.signal)
+      .then(({ available }) => {
+        if (available === false) setDuplicatedEmail(debouncedEmail)
+      })
+      .catch(() => {
         // 취소된 요청이나 확인 실패는 무시
-      }
-    }, EMAIL_CHECK_DELAY_MS)
+      })
 
-    return () => {
-      clearTimeout(timer)
-      controller.abort()
-    }
-  }, [values.email])
-
-  function handleEmailBlur() {
-    const email = values.email.trim()
-    if (email !== '' && !EMAIL_PATTERN.test(email)) {
-      setErrors(prev => ({ ...prev, email: '이메일 형식이 올바르지 않아요.' }))
-    }
-  }
+    // 이메일이 다시 바뀌면 진행 중인 요청을 취소
+    return () => controller.abort()
+  }, [debouncedEmail])
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -83,7 +92,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
     const request: SignupRequest = { ...values, name: values.name.trim(), email: values.email.trim() }
     const fieldErrors = validate(request)
     if (Object.keys(fieldErrors).length > 0) {
-        setErrors({ email: DUPLICATED_EMAIL_MESSAGE })
+      setErrors(fieldErrors)
       return
     }
 
@@ -94,7 +103,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
       onSuccess(request.email)
     } catch (error) {
       if (error instanceof ApiError && error.code === 'EMAIL_DUPLICATED') {
-        setErrors({ email: '이미 가입한 이메일 주소예요.' })
+        setDuplicatedEmail(request.email)
       } else {
         setFormError(getErrorMessage(error))
       }
@@ -114,7 +123,6 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           value={values.name}
           error={errors.name}
           onChange={event => changeField('name', event.target.value)}
-          onBlur={handleEmailBlur}
         />
         <TextField
           label="이메일 주소"
@@ -124,7 +132,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           maxLength={255}
           placeholder="로그인 시 사용하실 이메일 주소를 입력해 주세요."
           value={values.email}
-          error={errors.email}
+          error={emailError}
           onChange={event => changeField('email', event.target.value)}
         />
         <div className="signup-password">
@@ -158,7 +166,7 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
           inputMode="numeric"
           placeholder="- 을 제외하고 전화번호를 입력해 주세요."
           value={values.phone}
-          error={errors.phone}
+          error={phoneError}
           onChange={event => changeField('phone', event.target.value.replace(/\D/g, '').slice(0, 11))}
         />
       </div>
