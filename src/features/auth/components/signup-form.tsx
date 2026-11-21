@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { Button } from '../../../components/ui/button'
 import { TextField } from '../../../components/ui/text-field'
 import { ApiError, getErrorMessage } from '../../../lib/api-error'
@@ -12,6 +12,7 @@ type Field = keyof SignupRequest
 type FieldErrors = Partial<Record<Field, string>>
 
 const INITIAL_VALUES: SignupRequest = { name: '', email: '', password: '', phone: '' }
+const EMAIL_CHECK_DELAY_MS = 300
 const DUPLICATED_EMAIL_MESSAGE = '이미 가입한 이메일 주소예요.'
 const PASSWORD_RULES = [
   { key: 'length', label: '최소 8글자 이상' },
@@ -37,44 +38,41 @@ export function SignupForm({ onSuccess }: SignupFormProps) {
   const [errors, setErrors] = useState<FieldErrors>({})
   const [formError, setFormError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  
-  const checkControllerRef = useRef<AbortController | null>(null)
 
   const passwordChecks = getPasswordChecks(values.password)
   const isFilled = Object.values(values).every(value => value.trim() !== '')
   const canSubmit = isFilled && !isSubmitting && !errors.email
 
   function changeField(field: Field, value: string) {
-    if (field === 'email') cancelEmailCheck()
     setValues(prev => ({ ...prev, [field]: value }))
     setErrors(prev => ({ ...prev, [field]: undefined }))
     setFormError('')
   }
 
-  function cancelEmailCheck() {
-    checkControllerRef.current?.abort()
-    checkControllerRef.current = null
-  }
-
-  async function handleEmailBlur() {
+  useEffect(() => {
     const email = values.email.trim()
-    if (email === '') return
-    if (!EMAIL_PATTERN.test(email)) {
-      setErrors(prev => ({ ...prev, email: '이메일 형식이 올바르지 않아요.' }))
-      return
-    }
+    if (!EMAIL_PATTERN.test(email)) return
 
-    cancelEmailCheck()
     const controller = new AbortController()
-    checkControllerRef.current = controller
+    const timer = setTimeout(async () => {
+      try {
+        const { available } = await checkLoginId(email, controller.signal)
+        if (!available) setErrors(prev => ({ ...prev, email: DUPLICATED_EMAIL_MESSAGE }))
+      } catch {
+        // 취소된 요청이나 확인 실패는 무시
+      }
+    }, EMAIL_CHECK_DELAY_MS)
 
-    try {
-      const { available } = await checkLoginId(email, controller.signal)
-      if (!available) setErrors(prev => ({ ...prev, email: DUPLICATED_EMAIL_MESSAGE }))
-    } catch (error) {
-      if (error instanceof DOMException && error.name === 'AbortError') return
-    } finally {
-      if (checkControllerRef.current === controller) checkControllerRef.current = null
+    return () => {
+      clearTimeout(timer)
+      controller.abort()
+    }
+  }, [values.email])
+
+  function handleEmailBlur() {
+    const email = values.email.trim()
+    if (email !== '' && !EMAIL_PATTERN.test(email)) {
+      setErrors(prev => ({ ...prev, email: '이메일 형식이 올바르지 않아요.' }))
     }
   }
 
