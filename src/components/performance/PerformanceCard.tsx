@@ -1,4 +1,4 @@
-import type { Performance } from '../data/performances'
+import type { Performance } from '../../data/performances'
 
 export function PerformanceCard({ performance }: { performance: Performance }) {
   return (
