@@ -6,7 +6,7 @@ import { useAuth } from '../../lib/auth'
 import './login.css'
 
 const TITLES: Record<LoginMode, ReactNode> = {
-  member: <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요.</>,
+  member: <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요</>,
   admin: '관리자 로그인',
 }
 
