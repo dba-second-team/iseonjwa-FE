@@ -40,7 +40,7 @@ export function SideMenu({ onClose }: { onClose: () => void }) {
       <div className="menu-profile">
         <img src={profile} width="46" height="46" alt="" />
         {user ? (
-          <span className="menu-user-name">{user.name}님</span>
+          <span className="menu-user-name">{user.name} 님</span>
         ) : (
           <Link className="menu-login-label" to="/login">로그인하기</Link>
         )}
