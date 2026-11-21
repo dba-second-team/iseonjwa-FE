@@ -48,3 +48,15 @@
   font-weight: 700;
   text-underline-offset: 3px;
 }
+
+.login-admin {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 13px;
+  text-underline-offset: 3px;
+}
+
+.login-admin a {
+  color: inherit;
+  text-underline-offset: 3px;
+}
