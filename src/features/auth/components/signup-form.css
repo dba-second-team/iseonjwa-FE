@@ -1,0 +1,53 @@
+.signup-form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  margin-top: 44px;
+}
+
+.signup-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.signup-password {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.signup-password-rules {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.signup-password-rule {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.signup-password-rule.is-valid {
+  color: var(--pink);
+}
+
+.signup-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  margin-top: auto;
+  padding-top: 40px;
+}
+
+.signup-error {
+  color: var(--danger);
+  font-size: 14px;
+}
