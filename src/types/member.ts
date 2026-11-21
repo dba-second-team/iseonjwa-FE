@@ -5,3 +5,10 @@ export type AuthUser = {
   role: Role
   name: string
 }
+
+export type LoginRequest = {
+  email: string
+  password: string
+}
+
+export type LoginResponse = AuthUser
