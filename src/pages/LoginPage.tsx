@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { getErrorMessage } from '../api/ApiError'
 import { memberApi } from '../api/member'
+import { adminApi } from '../api/admin'
 import { useAuth } from '../auth/useAuth'
 import { TextField } from '../components/common/TextField'
 import { Button } from '../components/common/Button'
@@ -10,10 +11,15 @@ import './LoginPage.css'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-export function LoginPage() {
+type LoginPageProps = {
+  mode?: 'member' | 'admin'
+}
+
+export function LoginPage({ mode = 'member' }: LoginPageProps) {
+  const isAdminMode = mode === 'admin'
   const navigate = useNavigate()
   const location = useLocation()
-  const { isLoggedIn, login } = useAuth()
+  const { isLoggedIn, isAdmin, login } = useAuth()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,7 +29,7 @@ export function LoginPage() {
 
   const redirectTo = (location.state as { from?: string } | null)?.from ?? '/'
 
-  if (isLoggedIn) return <Navigate to={redirectTo} replace />
+  if (isAdminMode ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
 
   const canSubmit = email.trim() !== '' && password !== '' && !isSubmitting
 
@@ -40,7 +46,8 @@ export function LoginPage() {
     setIsSubmitting(true)
     setFormError('')
     try {
-      const user = await memberApi.login({ email: trimmedEmail, password })
+      const loginApi = isAdminMode ? adminApi.login : memberApi.login
+      const user = await loginApi({ email: trimmedEmail, password })
       login(user)
       navigate(redirectTo, { replace: true })
     } catch (error) {
@@ -53,7 +60,9 @@ export function LoginPage() {
     <main className="page login-page">
       <BackHeader />
 
-      <h1 className="login-title">안녕하세요!<br />아래 정보를 입력해 로그인해주세요</h1>
+      <h1 className="login-title">
+        {isAdminMode ? <>관리자 로그인</> : <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요.</>}
+      </h1>
 
       <form className="login-form" noValidate onSubmit={handleSubmit}>
         <div className="login-fields">
@@ -87,9 +96,16 @@ export function LoginPage() {
 
         <div className="login-bottom">
           {formError && <p className="login-error" role="alert">{formError}</p>}
-          <p className="login-signup">
-            계정이 없나요? <Link to="/signup">회원가입</Link>
-          </p>
+          {!isAdminMode && (
+            <>
+              <p className="login-signup">
+                계정이 없나요? <Link to="/signup">회원가입</Link>
+              </p>
+              <p className="login-admin">
+                관리자이신가요? <Link to="/admin/login">관리자 로그인</Link>
+              </p>
+            </>
+          )}
           <Button type="submit" disabled={!canSubmit} loading={isSubmitting}>
             {isSubmitting ? '로그인 중...' : '로그인'}
           </Button>
