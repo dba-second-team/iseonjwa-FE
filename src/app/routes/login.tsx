@@ -19,7 +19,8 @@ export function LoginRoute({ mode = 'member' }: LoginRouteProps) {
   const location = useLocation()
   const { isLoggedIn, isAdmin } = useAuth()
 
-  const redirectTo = (location.state as { from?: string } | null)?.from ?? '/'
+  const state = location.state as { from?: string; signedUpEmail?: string } | null
+  const redirectTo = state?.from ?? '/'
 
   if (mode === 'admin' ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
 
@@ -27,7 +28,7 @@ export function LoginRoute({ mode = 'member' }: LoginRouteProps) {
     <main className="page login-page">
       <BackHeader />
       <h1 className="login-title">{TITLES[mode]}</h1>
-      <LoginForm mode={mode} onSuccess={() => navigate(redirectTo, { replace: true })} />
+          <LoginForm mode={mode} defaultEmail={state?.signedUpEmail} onSuccess={() => navigate(redirectTo, { replace: true })} />
     </main>
   )
 }
