@@ -18,6 +18,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  --danger: #b64645;
+  --radius: 6px;
+  --control-height: 48px;
 }
 
 * {
