@@ -1,6 +1,6 @@
 .button {
   width: 100%;
-  height: var(--control-height);
+  height: var(--button-height);
   border: 0;
   border-radius: var(--radius);
   color: #fff;

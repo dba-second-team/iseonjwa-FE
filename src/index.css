@@ -8,7 +8,7 @@
 
 :root {
   --pink: #fb247f;
-  --surface: #2a2a2a;
+  --surface: #292929;
   --muted: #797979;
   color-scheme: dark;
   font-family: 'Pretendard', sans-serif;
@@ -19,8 +19,9 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   --danger: #ff5a5a;
-  --radius: 6px;
-  --control-height: 48px;
+  --radius: 8px;
+  --input-height: 48px;
+  --button-height: 56px;
 }
 
 * {
