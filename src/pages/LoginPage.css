@@ -1,7 +1,7 @@
 .login-page {
   display: flex;
   flex-direction: column;
-  padding: 0 22px 34px;
+  padding: 0 24px 34px;
 }
 
 .login-title {
@@ -39,6 +39,7 @@
 }
 
 .login-signup {
+  margin-bottom: 8px;
   font-size: 15px;
 }
 
