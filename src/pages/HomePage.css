@@ -118,16 +118,11 @@
   line-height: 20px;
 }
 
-@media (min-width: 600px) {
-  .page {
-    max-width: 393px;
-  }
-}
-
 .icon-button { display: grid; place-items: center; width: 44px; height: 44px; padding: 0; color: #fff; border: 0; background: transparent; cursor: pointer; }
 .side-menu { position: fixed; inset: 0 0 0 auto; width: min(66%, 260px); max-width: 260px; max-height: none; height: 100svh; margin: 0; padding: 80px 24px 40px; border: 0; color: #fff; background: #1b1b1b; }
 .side-menu::backdrop { background: rgb(0 0 0 / 72%); }
 .menu-close { position: absolute; top: 0; right: 0; }
 .menu-profile { display: flex; flex-direction: column; align-items: center; gap: 18px; font-size: 14px; font-weight: 700; }
 .menu-login-label { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+@media (min-width: 600px) { .side-menu { right: max(0px, calc((100vw - 393px) / 2)); } }
 
