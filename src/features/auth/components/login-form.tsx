@@ -6,9 +6,8 @@ import { getErrorMessage } from '../../../lib/api-error'
 import { useAuth } from '../../../lib/auth'
 import { loginAdmin, loginMember } from '../api/login'
 import type { LoginRequest, LoginResponse } from '../types'
+import { EMAIL_PATTERN } from '../utils/validation'
 import './login-form.css'
-
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 export type LoginMode = 'member' | 'admin'
 
@@ -24,14 +23,15 @@ const MODE_CONFIG: Record<LoginMode, LoginModeConfig> = {
 
 type LoginFormProps = {
   mode: LoginMode
+  defaultEmail?: string
   onSuccess: () => void
 }
 
-export function LoginForm({ mode, onSuccess }: LoginFormProps) {
+export function LoginForm({ mode, defaultEmail = '', onSuccess }: LoginFormProps) {
   const config = MODE_CONFIG[mode]
   const { login } = useAuth()
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(defaultEmail)
   const [password, setPassword] = useState('')
   const [emailError, setEmailError] = useState('')
   const [formError, setFormError] = useState('')
