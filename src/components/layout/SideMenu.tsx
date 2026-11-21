@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { Link } from 'react-router'
-import profile from '../assets/reference/profile.svg'
+import profile from '../../assets/reference/profile.svg'
 import { useAuth } from '../../auth/useAuth'
 
 export function SideMenu({ onClose }: { onClose: () => void }) {
