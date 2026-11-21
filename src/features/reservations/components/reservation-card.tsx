@@ -3,6 +3,7 @@ import type { MyReservation, PaymentStatus } from '../types'
 import { formatDate, formatPrice, formatRoundAndCount } from '../utils/format'
 import './reservation-card.css'
 
+
 const STATUS_BUTTON: Record<PaymentStatus, { label: string; cancelable: boolean }> = {
   PAID: { label: '취소하기', cancelable: true },
   CANCELED: { label: '환불 진행 중', cancelable: false },
@@ -14,7 +15,7 @@ type ReservationCardProps = {
 }
 
 export function ReservationCard({ reservation }: ReservationCardProps) {
-  const button = STATUS_BUTTON[reservation.paymentStatus]
+  const button: (typeof STATUS_BUTTON)[PaymentStatus] | undefined = STATUS_BUTTON[reservation.paymentStatus]
 
   const details = [
     { label: '예매일', value: formatDate(reservation.reservedAt) },
@@ -32,13 +33,15 @@ export function ReservationCard({ reservation }: ReservationCardProps) {
         ) : (
           <div className="reservation-poster reservation-poster-empty" aria-hidden="true" />
         )}
-        <button
-          className={cx('reservation-button', button.cancelable && 'reservation-button-cancel')}
-          type="button"
-          disabled={!button.cancelable}
-        >
-          {button.label}
-        </button>
+        {button && (
+          <button
+            className={cx('reservation-button', button.cancelable && 'reservation-button-cancel')}
+            type="button"
+            disabled={!button.cancelable}
+          >
+            {button.label}
+          </button>
+        )}
       </div>
 
       <div className="reservation-info">
