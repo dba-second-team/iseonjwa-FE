@@ -36,5 +36,6 @@
 }
 
 .text-field-error {
-  color: var(--danger);            /* #ff5a5a */
+  color: var(--danger);
+  font-size: 14px;
 }
