@@ -129,5 +129,5 @@
 .side-menu::backdrop { background: rgb(0 0 0 / 72%); }
 .menu-close { position: absolute; top: 0; right: 0; }
 .menu-profile { display: flex; flex-direction: column; align-items: center; gap: 18px; font-size: 14px; font-weight: 700; }
-.menu-login-label { text-decoration: underline; text-underline-offset: 3px; }
-@media (min-width: 600px) { .side-menu { right: max(0px, calc((100vw - 393px) / 2)); } }
+.menu-login-label { color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+
