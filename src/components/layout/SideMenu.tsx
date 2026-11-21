@@ -1,8 +1,18 @@
 import { useEffect, useRef } from 'react'
-import profile from '../assets/reference/profile.svg'
+import { Link, useNavigate } from 'react-router'
+import profile from '../../assets/reference/profile.svg'
+import { useAuth } from '../../auth/useAuth'
 
 export function SideMenu({ onClose }: { onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null)
+  const navigate = useNavigate()
+  const { user, logout } = useAuth()
+
+  function handleLogout() {
+    logout()
+    onClose()
+    navigate('/', { replace: true })
+  }
 
   useEffect(() => {
     const dialog = ref.current
@@ -36,8 +46,27 @@ export function SideMenu({ onClose }: { onClose: () => void }) {
       </button>
       <div className="menu-profile">
         <img src={profile} width="46" height="46" alt="" />
-        <span className="menu-login-label">로그인하기</span>
+        {user ? (
+          <span className="menu-user-name">{user.name}</span>
+        ) : (
+          <Link className="menu-login-label" to="/login">로그인하기</Link>
+        )}
       </div>
+      {user && (
+        <>
+          <nav className="menu-links" aria-label="내 메뉴">
+            <Link className="menu-link" to="/my/reservations" onClick={onClose}>
+              나의 공연 예매내역
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="m9 6 6 6-6 6" />
+              </svg>
+            </Link>
+          </nav>
+          <button className="menu-logout" type="button" onClick={handleLogout}>
+            로그아웃
+          </button>
+        </> 
+      )}
     </dialog>
   )
 }

@@ -1,0 +1,18 @@
+.back-header {
+  display: flex;
+  align-items: center;
+  height: 56px;
+  margin-left: -12px;
+}
+
+.back-header-button {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+}
