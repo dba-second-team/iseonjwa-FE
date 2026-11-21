@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import ticket from '../assets/frame-1/ticket.svg'
-import { PerformanceCard } from '../components/PerformanceCard'
-import { SideMenu } from '../components/SideMenu'
+import { PerformanceCard } from '../components/performance/PerformanceCard'
+import { SideMenu } from '../components/layout/SideMenu'
 import { performances } from '../data/performances'
 import './HomePage.css'
 
