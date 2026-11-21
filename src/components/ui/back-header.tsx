@@ -3,9 +3,10 @@ import './back-header.css'
 
 type BackHeaderProps = {
   fallbackTo?: string
+  title?: string
 }
 
-export function BackHeader({ fallbackTo = '/' }: BackHeaderProps) {
+export function BackHeader({ fallbackTo = '/', title }: BackHeaderProps) {
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -21,6 +22,7 @@ export function BackHeader({ fallbackTo = '/' }: BackHeaderProps) {
           <path d="M9 1 1 9l8 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
         </svg>
       </button>
+      {title && <h1 className="back-header-title">{title}</h1>}
     </header>
   )
 }
