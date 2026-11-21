@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type ReactNode } from 'react'
 import { Link, Navigate, useLocation, useNavigate } from 'react-router'
 import { getErrorMessage } from '../api/ApiError'
 import { memberApi } from '../api/member'
@@ -7,16 +7,38 @@ import { useAuth } from '../auth/useAuth'
 import { TextField } from '../components/common/TextField'
 import { Button } from '../components/common/Button'
 import { BackHeader } from '../components/common/BackHeader'
+import type { LoginRequest, LoginResponse } from '../types/member'
 import './LoginPage.css'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+type LoginMode = 'member' | 'admin'
+
+type LoginModeConfig = {
+  title: ReactNode
+  login: (request: LoginRequest) => Promise<LoginResponse>
+  showMemberLinks: boolean
+}
+
+const MODE_CONFIG: Record<LoginMode, LoginModeConfig> = {
+  member: {
+    title: <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요.</>,
+    login: memberApi.login,
+    showMemberLinks: true,
+  },
+  admin: {
+    title: '관리자 로그인',
+    login: adminApi.login,
+    showMemberLinks: false,
+  },
+}
+
 type LoginPageProps = {
-  mode?: 'member' | 'admin'
+  mode?: LoginMode
 }
 
 export function LoginPage({ mode = 'member' }: LoginPageProps) {
-  const isAdminMode = mode === 'admin'
+  const config = MODE_CONFIG[mode]
   const navigate = useNavigate()
   const location = useLocation()
   const { isLoggedIn, isAdmin, login } = useAuth()
@@ -29,7 +51,7 @@ export function LoginPage({ mode = 'member' }: LoginPageProps) {
 
   const redirectTo = (location.state as { from?: string } | null)?.from ?? '/'
 
-  if (isAdminMode ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
+  if (mode === 'admin' ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
 
   const canSubmit = email.trim() !== '' && password !== '' && !isSubmitting
 
@@ -46,8 +68,7 @@ export function LoginPage({ mode = 'member' }: LoginPageProps) {
     setIsSubmitting(true)
     setFormError('')
     try {
-      const loginApi = isAdminMode ? adminApi.login : memberApi.login
-      const user = await loginApi({ email: trimmedEmail, password })
+      const user = await config.login({ email: trimmedEmail, password })
       login(user)
       navigate(redirectTo, { replace: true })
     } catch (error) {
@@ -60,9 +81,7 @@ export function LoginPage({ mode = 'member' }: LoginPageProps) {
     <main className="page login-page">
       <BackHeader />
 
-      <h1 className="login-title">
-        {isAdminMode ? <>관리자 로그인</> : <>안녕하세요!<br />아래 정보를 입력해 로그인해주세요.</>}
-      </h1>
+      <h1 className="login-title">{config.title}</h1>
 
       <form className="login-form" noValidate onSubmit={handleSubmit}>
         <div className="login-fields">
@@ -96,7 +115,7 @@ export function LoginPage({ mode = 'member' }: LoginPageProps) {
 
         <div className="login-bottom">
           {formError && <p className="login-error" role="alert">{formError}</p>}
-          {!isAdminMode && (
+          {config.showMemberLinks && (
             <p className="login-signup">
               계정이 없나요? <Link to="/signup">회원가입</Link>
             </p>
@@ -104,7 +123,7 @@ export function LoginPage({ mode = 'member' }: LoginPageProps) {
           <Button type="submit" disabled={!canSubmit} loading={isSubmitting}>
             {isSubmitting ? '로그인 중...' : '로그인'}
           </Button>
-          {!isAdminMode && (
+          {config.showMemberLinks && (
             <Link className="login-admin" to="/admin/login">관리자 로그인</Link>
           )}
         </div>
