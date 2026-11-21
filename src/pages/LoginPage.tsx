@@ -97,18 +97,16 @@ export function LoginPage({ mode = 'member' }: LoginPageProps) {
         <div className="login-bottom">
           {formError && <p className="login-error" role="alert">{formError}</p>}
           {!isAdminMode && (
-            <>
-              <p className="login-signup">
-                계정이 없나요? <Link to="/signup">회원가입</Link>
-              </p>
-              <p className="login-admin">
-                관리자이신가요? <Link to="/admin/login">관리자 로그인</Link>
-              </p>
-            </>
+            <p className="login-signup">
+              계정이 없나요? <Link to="/signup">회원가입</Link>
+            </p>
           )}
           <Button type="submit" disabled={!canSubmit} loading={isSubmitting}>
             {isSubmitting ? '로그인 중...' : '로그인'}
           </Button>
+          {!isAdminMode && (
+            <Link className="login-admin" to="/admin/login">관리자 로그인</Link>
+          )}
         </div>
       </form>
     </main>
