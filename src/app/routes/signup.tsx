@@ -13,7 +13,7 @@ export function SignupRoute() {
   return (
     <main className="page signup-page">
       <BackHeader fallbackTo="/login" />
-      <h1 className="signup-title">회원가입을 위해<br />아래 정보를 입력해 주세요.</h1>
+      <h1 className="signup-title">회원가입을 위해<br />아래 정보를 입력해 주세요</h1>
       <SignupForm onSuccess={email => navigate('/login', { replace: true, state: { signedUpEmail: email } })} />
     </main>
   )
