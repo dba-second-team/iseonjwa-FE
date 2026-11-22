@@ -10,7 +10,7 @@ type SelectionBarProps = {
   onAction: () => void
 }
 
-/** 구역·좌석 선택 화면 아래에 고정되는 선택 요약 + 다음 버튼 */
+/** 구역 선택, 좌석 선택 화면 아래에 고정되는 선택 요약 + 다음 버튼 */
 export function SelectionBar({
   title,
   description,
