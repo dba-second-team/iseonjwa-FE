@@ -1,33 +1,24 @@
 import { cx } from '../../../utils/cx'
-import type { MyReservation, ReservationStatus } from '../types'
+import type { MyReservation, PaymentStatus } from '../types'
 import { formatDate, formatPrice, formatRoundAndCount } from '../utils/format'
 import './reservation-card.css'
 
 type StatusButton = { label: string; cancelable: boolean }
 
-const STATUS_BUTTON: Record<ReservationStatus, StatusButton> = {
-  CONFIRMED: { label: '취소하기', cancelable: true },
-  CANCELED: { label: '취소 완료', cancelable: false },
-  PENDING: { label: '결제 대기', cancelable: false },
+const STATUS_BUTTON: Record<PaymentStatus, StatusButton> = {
+  PAID: { label: '취소하기', cancelable: true },
+  CANCELED: { label: '환불 진행 중', cancelable: false },
+  REFUNDED: { label: '환불 완료', cancelable: false },
 }
-
-
-/**
- * TODO: 백엔드에 paymentStatus가 생기면 주석 해제
- */
-// const STATUS_BUTTON: Record<PaymentStatus, { label: string; cancelable: boolean }> = {
-//   PAID: { label: '취소하기', cancelable: true },
-//   CANCELED: { label: '환불 진행 중', cancelable: false },
-//   REFUNDED: { label: '환불 완료', cancelable: false },
-// }
 
 type ReservationCardProps = {
   reservation: MyReservation
 }
 
 export function ReservationCard({ reservation }: ReservationCardProps) {
-  // const button: StatusButton = STATUS_BUTTON[reservation.paymentStatus]
-  const button: StatusButton = STATUS_BUTTON[reservation.status]
+  const button: StatusButton | undefined = reservation.paymentStatus
+    ? STATUS_BUTTON[reservation.paymentStatus]
+    : undefined
 
   const details = [
     { label: '예매일', value: formatDate(reservation.reservedAt) },

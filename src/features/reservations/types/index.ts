@@ -1,5 +1,4 @@
-// export type PaymentStatus = 'PAID' | 'CANCELED' | 'REFUNDED';
-export type ReservationStatus = 'CONFIRMED' | 'CANCELED' | 'PENDING';
+export type PaymentStatus = 'PAID' | 'CANCELED' | 'REFUNDED'
 
 export type ReservationSeat = {
   section: string
@@ -9,13 +8,13 @@ export type ReservationSeat = {
 
 export type MyReservation = {
   reservationId: number
+  scheduleId: number
   performanceTitle: string
   venueName: string
   startAt: string
   seats: ReservationSeat[]
   totalAmount: number
-  // paymentStatus: PaymentStatus
-  status: ReservationStatus
+  paymentStatus: PaymentStatus | null
   reservedAt: string
   posterUrl?: string | null
   scheduleRound?: number | null
