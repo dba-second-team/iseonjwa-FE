@@ -1,0 +1,202 @@
+.performance-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.performance-section {
+  padding: 28px 0;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.performance-section:first-child {
+  padding-top: 20px;
+}
+
+.performance-section:last-of-type {
+  border-bottom: 0;
+}
+
+.performance-section-head.has-action {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.performance-section-title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.performance-section-badge {
+  color: #bdbdbd;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.performance-section-description {
+  margin-top: 8px;
+  color: #bdbdbd;
+  font-size: 13px;
+}
+
+.performance-section-body {
+  margin-top: 16px;
+}
+
+.performance-section-head:has(.performance-section-description) + .performance-section-body {
+  margin-top: 12px;
+}
+
+.performance-notice {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  color: #bdbdbd;
+  font-size: 12px;
+}
+
+.performance-notice svg {
+  flex-shrink: 0;
+  color: #bdbdbd;
+}
+
+.performance-input {
+  width: 100%;
+  height: var(--input-height);
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #fff;
+  background: var(--surface);
+  font: inherit;
+  font-size: 15px;
+}
+
+.performance-input::placeholder {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.performance-input:focus-visible {
+  outline: none;
+  border-color: var(--pink);
+}
+
+.performance-input[aria-invalid='true'] {
+  border-color: var(--danger);
+}
+
+.performance-textarea {
+  height: 132px;
+  padding: 14px;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.performance-counter {
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 13px;
+  text-align: right;
+}
+
+.performance-suffix-input,
+.performance-date-input {
+  position: relative;
+}
+
+.performance-suffix-input .performance-input {
+  padding-right: 44px;
+}
+
+.performance-suffix {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  font-size: 14px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.performance-sub-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.performance-sub-field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.performance-sub-label {
+  color: #bdbdbd;
+  font-size: 13px;
+}
+
+/* 날짜 입력: 기본 달력 아이콘을 숨기고 Figma 아이콘으로 대신함 */
+.performance-date-input .performance-input {
+  padding-right: 48px;
+  cursor: pointer;
+}
+
+.performance-date-input .performance-input::-webkit-calendar-picker-indicator {
+  display: none;
+}
+
+.performance-date-input.is-empty .performance-input {
+  color: transparent;
+}
+
+.performance-date-input.is-empty .performance-input:focus-visible {
+  color: #fff;
+}
+
+.performance-date-placeholder {
+  position: absolute;
+  top: 50%;
+  left: 15px;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.performance-date-input:not(.is-empty) .performance-date-placeholder,
+.performance-date-input.is-empty:focus-within .performance-date-placeholder {
+  display: none;
+}
+
+.performance-date-icon {
+  position: absolute;
+  top: 50%;
+  right: 16px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.performance-error {
+  margin-top: 10px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.performance-form-bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 120px;
+}
+
+.performance-form-error {
+  color: var(--danger);
+  font-size: 14px;
+  text-align: center;
+}
