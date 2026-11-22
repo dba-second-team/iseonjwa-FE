@@ -17,7 +17,7 @@ export type MyReservation = {
   paymentStatus: PaymentStatus
   reservedAt: string
   posterUrl?: string | null
-  scheduleRound?: number | null
+  scheduleRound?: number | null // scheduleRound: number
 }
 
 export type MyReservationPage = {
