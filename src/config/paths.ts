@@ -1,0 +1,16 @@
+/**
+ * 화면 경로를 한곳에서 만들어 오타와 경로 불일치를 막음
+ */
+
+function bookingBase(performanceId: number, scheduleId: number) {
+  return `/performances/${performanceId}/schedules/${scheduleId}`
+}
+
+export const paths = {
+  home: () => '/',
+  performance: (performanceId: number) => `/performances/${performanceId}`,
+  booking: {
+    queue: (performanceId: number, scheduleId: number) => `${bookingBase(performanceId, scheduleId)}/queue`,
+    sections: (performanceId: number, scheduleId: number) => `${bookingBase(performanceId, scheduleId)}/sections`,
+  },
+}
