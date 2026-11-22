@@ -4,11 +4,11 @@ import { ErrorRoute } from './routes/error'
 import { HomeRoute } from './routes/home'
 import { LoginRoute } from './routes/login'
 import { MyReservationsRoute } from './routes/my-reservations'
+import { PerformanceDetailRoute } from './routes/performance-detail'
 import { RootRoute } from './routes/root'
 import { SignupRoute } from './routes/signup'
 import { AdminPerformancesRoute } from './routes/admin-performances'
 import { AdminReservationsRoute } from './routes/admin-reservations'
-import { AdminRefundsRoute } from './routes/admin-refunds'
 import { RequireAdmin } from './require-admin'
 
 
@@ -21,13 +21,13 @@ export const router = createBrowserRouter([
       { index: true, element: <HomeRoute /> },
       { path: 'login', element: <LoginRoute /> },
       { path: 'signup', element: <SignupRoute /> },
+      { path: 'performances/:performanceId', element: <PerformanceDetailRoute /> },
       { path: 'admin/login', element: <LoginRoute key="admin" mode="admin" /> },
       {
         element: <RequireAdmin />,
         children: [
           { path: 'admin/performances', element: <AdminPerformancesRoute /> },
           { path: 'admin/performances/:performanceId/reservations', element: <AdminReservationsRoute /> },
-          { path: 'admin/performances/:performanceId/refunds', element: <AdminRefundsRoute /> },
         ],
       },
       {
