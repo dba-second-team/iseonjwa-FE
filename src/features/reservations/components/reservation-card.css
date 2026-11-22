@@ -1,0 +1,78 @@
+.reservation-card {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.reservation-side {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reservation-poster {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.reservation-poster-empty {
+  background: var(--surface);
+}
+
+.reservation-button {
+  height: 42px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--muted);
+  background: #3a3a3a;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.reservation-button-cancel {
+  border-color: var(--pink);
+  color: var(--pink);
+  background: transparent;
+  cursor: pointer;
+}
+
+.reservation-info {
+  min-width: 0;
+  padding: 16px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.reservation-title {
+  padding-bottom: 12px;
+  border-bottom: 1px solid #3d3d3d;
+  font-size: 15px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.reservation-details {
+  display: grid;
+  gap: 8px;
+  margin: 12px 0 0;
+  font-size: 13px;
+}
+
+.reservation-detail {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 8px;
+}
+
+.reservation-detail dt {
+  color: var(--muted);
+}
+
+.reservation-detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
