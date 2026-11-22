@@ -25,11 +25,12 @@
 
 .admin-performance-genre {
   color: var(--muted);
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
 }
 
 .admin-performance-title {
-  margin-top: 4px;
+  margin-top: 8px;
   font-size: 18px;
   font-weight: 700;
   overflow-wrap: anywhere;
