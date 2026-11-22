@@ -29,8 +29,8 @@ export function ReservationCard({ reservation }: ReservationCardProps) {
   return (
     <article className="reservation-card">
       <div className="reservation-side">
-        {reservation.posterKey ? (
-          <img className="reservation-poster" src={reservation.posterKey} alt={`${reservation.performanceTitle} 포스터`} />
+        {reservation.posterUrl ? (
+          <img className="reservation-poster" src={reservation.posterUrl} alt={`${reservation.performanceTitle} 포스터`} />
         ) : (
           <div className="reservation-poster reservation-poster-empty" aria-hidden="true" />
         )}
