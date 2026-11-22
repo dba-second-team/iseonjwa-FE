@@ -1,4 +1,4 @@
-import { BackHeader } from '../../components/ui/back-header'
+import { AdminHeader } from '../../components/layouts/admin-header'
 import { AdminPerformanceCard } from '../../features/admin-performances/components/admin-performance-card'
 import { useAdminPerformances } from '../../features/admin-performances/hooks/use-admin-performances'
 import './admin-performances.css'
@@ -8,7 +8,7 @@ export function AdminPerformancesRoute() {
 
   return (
     <main className="page admin-performances-page">
-      <BackHeader title="공연 관리하기" />
+      <AdminHeader title="공연 관리하기" />
 
       {state.status === 'loading' && <p className="admin-performances-message">공연 목록을 불러오는 중이에요.</p>}
 

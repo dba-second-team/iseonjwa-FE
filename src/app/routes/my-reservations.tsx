@@ -1,4 +1,4 @@
-import { BackHeader } from '../../components/ui/back-header'
+import { BackHeader } from '../../components/layouts/back-header'
 import { ReservationCard } from '../../features/reservations/components/reservation-card'
 import { useMyReservations } from '../../features/reservations/hooks/use-my-reservations'
 import './my-reservations.css'

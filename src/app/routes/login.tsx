@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router'
-import { BackHeader } from '../../components/ui/back-header'
+import { BackHeader } from '../../components/layouts/back-header'
 import { LoginForm, type LoginMode } from '../../features/auth/components/login-form'
 import { useAuth } from '../../lib/auth'
 import './login.css'
