@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { ApiError, getErrorMessage } from '../../../lib/api-error'
+import { enterActiveQueue } from '../api/enter-active-queue'
 import { getQueueStatus } from '../api/get-queue-status'
 import { registerWaiting } from '../api/register-waiting'
 import type { QueueState } from '../types'
@@ -15,12 +16,18 @@ export type WaitingQueueState =
   | { status: 'other-performance' }
   | { status: 'error'; message: string }
 
+function isApiError(error: unknown, code: string): boolean {
+  return error instanceof ApiError && error.code === code
+}
+
 /**
- * 대기열 진입 → 순번 폴링 → 입장 가능 여부 판단
+ * 대기열 진입 → 순번 폴링 → 작업열 입장
  *
  * 1. 상태를 먼저 조회 (새로고침해도 기존 순번을 이어받기 위해)
  * 2. 대기열에 없으면(404 QUEUE_ENTRY_NOT_FOUND) 그때 등록
  * 3. canEnter가 true가 될 때까지 일정 간격으로 상태 조회
+ * 4. canEnter가 true면 작업열 입장 요청, 성공하면 ready
+ *    (그 사이 자리가 찼으면 409 CANNOT_ENTER_ACTIVE_QUEUE가 오므로 계속 대기)
  */
 export function useWaitingQueue(performanceId: number) {
   const [retryCount, setRetryCount] = useState(0)
@@ -35,46 +42,61 @@ export function useWaitingQueue(performanceId: number) {
       try {
         return await getQueueStatus({ signal })
       } catch (error) {
-        if (!(error instanceof ApiError) || error.code !== 'QUEUE_ENTRY_NOT_FOUND') throw error
+        if (!isApiError(error, 'QUEUE_ENTRY_NOT_FOUND')) throw error
       }
 
       try {
         await registerWaiting(performanceId, { signal })
       } catch (error) {
         // 다른 탭에서 먼저 등록한 경우는 이미 대기 중이니 그대로 진행
-        if (!(error instanceof ApiError) || error.code !== 'ALREADY_IN_QUEUE') throw error
+        if (!isApiError(error, 'ALREADY_IN_QUEUE')) throw error
       }
       return getQueueStatus({ signal })
     }
 
-    /** 화면 상태를 바꾸고, 계속 폴링해야 하면 true */
-    function apply(queue: QueueState): boolean {
-      if (signal.aborted) return false
-      if (queue.performanceId !== performanceId) {
-        setState({ status: 'other-performance' })
-        return false
-      }
-      if (queue.status === 'ACTIVE' || queue.canEnter) {
-        clearInitialPosition(performanceId)
-        setState({ status: 'ready' })
-        return false
-      }
+    function ready() {
+      clearInitialPosition(performanceId)
+      setState({ status: 'ready' })
+    }
+
+    function showWaiting(queue: QueueState) {
       setState({
         status: 'waiting',
         position: queue.position,
         progress: getQueueProgress(performanceId, queue.position),
       })
-      return true
     }
 
-    function scheduleNext() {
-      timer = setTimeout(() => {
-        getQueueStatus({ signal })
-          .then(queue => {
-            if (apply(queue)) scheduleNext()
-          })
-          .catch(handleError)
-      }, POLL_INTERVAL_MS)
+    /** 화면 상태를 바꾸고, 계속 폴링해야 하면 true */
+    async function apply(queue: QueueState): Promise<boolean> {
+      if (signal.aborted) return false
+      if (queue.performanceId !== performanceId) {
+        setState({ status: 'other-performance' })
+        return false
+      }
+      // 이미 작업열에 있으면(새로고침 등) 바로 입장
+      if (queue.status === 'ACTIVE') {
+        ready()
+        return false
+      }
+      if (!queue.canEnter) {
+        showWaiting(queue)
+        return true
+      }
+
+      try {
+        await enterActiveQueue(performanceId, { signal })
+      } catch (error) {
+        // 상태 조회와 입장 요청 사이에 자리가 찬 경우
+        if (isApiError(error, 'CANNOT_ENTER_ACTIVE_QUEUE')) {
+          showWaiting(queue)
+          return true
+        }
+        throw error
+      }
+      if (signal.aborted) return false
+      ready()
+      return false
     }
 
     function handleError(error: unknown) {
@@ -82,9 +104,21 @@ export function useWaitingQueue(performanceId: number) {
       setState({ status: 'error', message: getErrorMessage(error) })
     }
 
+    function scheduleNext() {
+      timer = setTimeout(() => {
+        getQueueStatus({ signal })
+          .then(apply)
+          .then(keepPolling => {
+            if (keepPolling) scheduleNext()
+          })
+          .catch(handleError)
+      }, POLL_INTERVAL_MS)
+    }
+
     enterOrResume()
-      .then(queue => {
-        if (apply(queue)) scheduleNext()
+      .then(apply)
+      .then(keepPolling => {
+        if (keepPolling) scheduleNext()
       })
       .catch(handleError)
 

@@ -19,3 +19,12 @@ export type QueueState = {
   /** ACTIVE일 때만 값이 있음 */
   expiresAt: string | null
 }
+
+/** POST /api/queue/active 응답 */
+export type ActiveAdmission = {
+  performanceId: number
+  status: 'ACTIVE'
+  admittedAt: string
+  /** 이 시각까지 예매를 마쳐야 함 */
+  expiresAt: string
+}
