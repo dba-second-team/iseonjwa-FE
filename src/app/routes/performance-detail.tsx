@@ -1,6 +1,7 @@
 import { useId, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import { BackHeader } from '../../components/layouts/back-header'
+import { paths } from '../../config/paths'
 import { Button } from '../../components/ui/button'
 import { ScheduleSheet } from '../../features/performances/components/schedule-sheet'
 import { usePerformanceDetail } from '../../features/performances/hooks/use-performance-detail'
@@ -72,7 +73,7 @@ function PerformanceDetailView({ performance, schedules }: PerformanceDetailView
   const unavailableLabel = getUnavailableLabel(performance.status, schedules.length)
 
   function selectSchedule(schedule: Schedule) {
-    const nextPath = `/schedules/${schedule.scheduleId}/sections`
+    const nextPath = paths.booking.queue(performance.performanceId, schedule.scheduleId)
     setSheetOpen(false)
     if (isLoggedIn) navigate(nextPath)
     else navigate('/login', { state: { from: nextPath } })
