@@ -1,0 +1,52 @@
+.seat-grid {
+  display: grid;
+  gap: 6px;
+  width: fit-content;
+  max-width: 100%;
+  margin-inline: auto;
+  padding-bottom: 4px;
+  overflow-x: auto;
+}
+
+.seat-grid-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.seat-grid-row-label {
+  flex: none;
+  width: 18px;
+  color: #b4b4b4;
+  font-size: 9px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.seat-grid-seat {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #5e5e5e;
+  cursor: pointer;
+}
+
+/* 점은 작아도 누르는 영역은 넉넉하게 */
+.seat-grid-seat::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+}
+
+.seat-grid-seat.is-selected {
+  background: var(--pink);
+}
+
+.seat-grid-seat:disabled {
+  background: #333;
+  cursor: default;
+}
