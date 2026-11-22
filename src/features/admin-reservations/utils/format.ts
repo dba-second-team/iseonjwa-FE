@@ -1,4 +1,4 @@
-import type { AdminReservation } from '../types'
+import type { AdminReservation, AdminReservationSeat } from '../types'
 
 const dateFormatter = new Intl.DateTimeFormat('ko-KR', {
   year: 'numeric',
@@ -24,4 +24,12 @@ export function getAmountDetail(reservation: AdminReservation): { label: string;
     return { label: '환불금액', value: formatPrice(reservation.refundAmount ?? 0) }
   }
   return { label: '총 금액', value: formatPrice(reservation.paidAmount) }
+}
+
+export function formatSchedule(scheduleNumber: number, startAt: string): string {
+  return `${scheduleNumber}회차 ${formatDate(startAt)}`
+}
+
+export function formatSeats(seats: AdminReservationSeat[]): string {
+  return seats.map(seat => `${seat.rowNum}열 ${seat.seatNum}번`).join(', ')
 }

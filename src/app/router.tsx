@@ -8,6 +8,7 @@ import { RootRoute } from './routes/root'
 import { SignupRoute } from './routes/signup'
 import { AdminPerformancesRoute } from './routes/admin-performances'
 import { AdminReservationsRoute } from './routes/admin-reservations'
+import { AdminRefundsRoute } from './routes/admin-refunds'
 import { RequireAdmin } from './require-admin'
 
 
@@ -26,6 +27,7 @@ export const router = createBrowserRouter([
         children: [
           { path: 'admin/performances', element: <AdminPerformancesRoute /> },
           { path: 'admin/performances/:performanceId/reservations', element: <AdminReservationsRoute /> },
+          { path: 'admin/performances/:performanceId/refunds', element: <AdminRefundsRoute /> },
         ],
       },
       {
