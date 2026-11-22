@@ -16,9 +16,7 @@ type ReservationCardProps = {
 }
 
 export function ReservationCard({ reservation }: ReservationCardProps) {
-  const button: StatusButton | undefined = reservation.paymentStatus
-    ? STATUS_BUTTON[reservation.paymentStatus]
-    : undefined
+  const button = STATUS_BUTTON[reservation.paymentStatus]
 
   const details = [
     { label: '예매일', value: formatDate(reservation.reservedAt) },
@@ -31,20 +29,18 @@ export function ReservationCard({ reservation }: ReservationCardProps) {
   return (
     <article className="reservation-card">
       <div className="reservation-side">
-        {reservation.posterUrl ? (
-          <img className="reservation-poster" src={reservation.posterUrl} alt={`${reservation.performanceTitle} 포스터`} />
+        {reservation.posterKey ? (
+          <img className="reservation-poster" src={reservation.posterKey} alt={`${reservation.performanceTitle} 포스터`} />
         ) : (
           <div className="reservation-poster reservation-poster-empty" aria-hidden="true" />
         )}
-        {button && (
-          <button
-            className={cx('reservation-button', button.cancelable && 'reservation-button-cancel')}
-            type="button"
-            disabled={!button.cancelable}
-          >
-            {button.label}
-          </button>
-        )}
+        <button
+          className={cx('reservation-button', button.cancelable && 'reservation-button-cancel')}
+          type="button"
+          disabled={!button.cancelable}
+        >
+          {button.label}
+        </button>
       </div>
 
       <div className="reservation-info">
