@@ -16,4 +16,5 @@ export const paths = {
       `${bookingBase(performanceId, scheduleId)}/seats?section=${encodeURIComponent(section)}`,
     confirm: (performanceId: number, scheduleId: number) => `${bookingBase(performanceId, scheduleId)}/confirm`,
   },
+  reservationComplete: (reservationId: number) => `/reservations/${reservationId}/complete`,
 }

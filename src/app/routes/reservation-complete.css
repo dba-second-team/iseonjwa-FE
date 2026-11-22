@@ -1,0 +1,29 @@
+.reservation-complete-page {
+  display: flex;
+  flex-direction: column;
+  padding: 0 20px calc(16px + env(safe-area-inset-bottom));
+}
+
+.reservation-complete-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 80px;
+}
+
+.reservation-complete-illustration {
+  width: 205px;
+  height: auto;
+}
+
+.reservation-complete-title {
+  margin: 40px 0 0;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.reservation-complete-footer {
+  padding-top: 16px;
+}
