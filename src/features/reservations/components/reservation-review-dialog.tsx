@@ -13,7 +13,7 @@ type ReservationReviewDialogProps = {
   onClose: () => void
 }
 
-/** "예매하신 내역이 맞나요?" 확인 다이얼로그 (예매·결제 단계에서 버튼 문구만 바꿔 씀) */
+/** "예매하신 내역이 맞나요?" 확인 다이얼로그 (예매 단계와 결제 단계에서 버튼 문구만 바꿔 씀) */
 export function ReservationReviewDialog({
   performanceTitle,
   dateTime,
