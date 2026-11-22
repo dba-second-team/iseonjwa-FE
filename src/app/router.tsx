@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router'
 import { RequireAuth } from './require-auth'
+import { BookingQueueRoute } from './routes/booking-queue'
 import { ErrorRoute } from './routes/error'
 import { HomeRoute } from './routes/home'
 import { LoginRoute } from './routes/login'
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           { path: 'my/reservations', element: <MyReservationsRoute /> },
+          { path: 'performances/:performanceId/schedules/:scheduleId/queue', element: <BookingQueueRoute /> },
         ],
       },
     ],
