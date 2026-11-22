@@ -1,0 +1,84 @@
+.review-dialog {
+  width: min(calc(100% - 40px), 353px);
+  padding: 24px 16px 16px;
+  border: 0;
+  border-radius: 12px;
+  color: #fff;
+  background: #232323;
+}
+
+.review-dialog::backdrop {
+  background: rgb(0 0 0 / 72%);
+}
+
+.review-dialog-title {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.review-dialog-card {
+  margin-top: 20px;
+  padding: 16px 14px;
+  border-radius: 4px;
+  background: #2e2e2e;
+}
+
+.review-dialog-performance {
+  padding-bottom: 14px;
+  border-bottom: 1px solid #4a4a4a;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.review-dialog-list {
+  display: grid;
+  gap: 14px;
+  margin: 14px 0 0;
+}
+
+.review-dialog-row {
+  display: grid;
+  grid-template-columns: 52px 1fr;
+  font-size: 13px;
+}
+
+.review-dialog-row dt {
+  color: var(--muted);
+}
+
+.review-dialog-row dd {
+  margin: 0;
+}
+
+.review-dialog-error {
+  margin-top: 12px;
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.review-dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.review-dialog-button {
+  height: 48px;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  background: #3f3f3f;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-dialog-confirm {
+  background: var(--pink);
+}
+
+.review-dialog-button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
