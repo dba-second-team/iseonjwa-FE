@@ -6,6 +6,8 @@ import { LoginRoute } from './routes/login'
 import { MyReservationsRoute } from './routes/my-reservations'
 import { RootRoute } from './routes/root'
 import { SignupRoute } from './routes/signup'
+import { AdminPerformancesRoute } from './routes/admin-performances'
+import { RequireAdmin } from './require-admin'
 
 export const router = createBrowserRouter([
   {
@@ -17,6 +19,12 @@ export const router = createBrowserRouter([
       { path: 'login', element: <LoginRoute /> },
       { path: 'signup', element: <SignupRoute /> },
       { path: 'admin/login', element: <LoginRoute key="admin" mode="admin" /> },
+      {
+        element: <RequireAdmin />,
+        children: [
+          { path: 'admin/performances', element: <AdminPerformancesRoute /> },
+        ],
+      },
       {
         element: <RequireAuth />,
         children: [
