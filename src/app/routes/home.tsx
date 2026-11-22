@@ -3,16 +3,21 @@ import ticket from '../../assets/frame-1/ticket.svg'
 import { SideMenu } from '../../components/layouts/side-menu'
 import { PerformanceCard } from '../../features/performances/components/performance-card'
 import { performances } from '../../features/performances/data/performances'
+import { Navigate } from 'react-router'
+import { useAuth } from '../../lib/auth'
 import './home.css'
 
 export function HomeRoute() {
   const [menuOpen, setMenuOpen] = useState(false)
   const menuButton = useRef<HTMLButtonElement>(null)
+  const { isAdmin } = useAuth()
 
   function closeMenu() {
     setMenuOpen(false)
     requestAnimationFrame(() => menuButton.current?.focus())
   }
+
+  if (isAdmin) return <Navigate to="/admin/performances" replace />
 
   return (
     <main className="page home-page">

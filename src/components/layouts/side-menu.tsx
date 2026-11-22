@@ -7,7 +7,11 @@ import './side-menu.css'
 export function SideMenu({ onClose }: { onClose: () => void }) {
   const ref = useRef<HTMLDialogElement>(null)
   const navigate = useNavigate()
-  const { user, logout } = useAuth()
+const { user, isAdmin, logout } = useAuth()
+
+  const links = isAdmin
+    ? [{ to: '/admin/performances', label: '공연 관리하기' }]
+    : [{ to: '/my/reservations', label: '나의 공연 예매내역' }]
 
   function handleLogout() {
     logout()
@@ -56,12 +60,14 @@ export function SideMenu({ onClose }: { onClose: () => void }) {
       {user && (
         <>
           <nav className="menu-links" aria-label="내 메뉴">
-            <Link className="menu-link" to="/my/reservations" onClick={onClose}>
-              나의 공연 예매내역
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="m9 6 6 6-6 6" />
-              </svg>
-            </Link>
+            {links.map(link => (
+              <Link key={link.to} className="menu-link" to={link.to} onClick={onClose}>
+                {link.label}
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="m9 6 6 6-6 6" />
+                </svg>
+              </Link>
+            ))}
           </nav>
           <button className="menu-logout" type="button" onClick={handleLogout}>
             로그아웃
