@@ -12,7 +12,7 @@ type Result =
 
 type State = { status: 'loading' } | Result
 
-/** 구역·좌석 선택에 필요한 공연 정보(1인 매수 제한)와 회차 좌석을 함께 불러옴 */
+/** 구역 선택과 좌석 선택에 필요한 공연 정보(1인 매수 제한)와 회차 좌석을 함께 불러옴 */
 export function useSeatMap(performanceId: number, scheduleId: number) {
   const [reloadCount, setReloadCount] = useState(0)
   const [response, setResponse] = useState<{ key: string; result: Result } | null>(null)
