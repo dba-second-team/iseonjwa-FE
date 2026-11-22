@@ -14,7 +14,7 @@ export type MyReservation = {
   startAt: string
   seats: ReservationSeat[]
   totalAmount: number
-  paymentStatus: PaymentStatus | null
+  paymentStatus: PaymentStatus
   reservedAt: string
   posterUrl?: string | null
   scheduleRound?: number | null
