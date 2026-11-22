@@ -34,3 +34,20 @@ export type CancelReservationResult = {
   cancelFee: number
   refundAmount: number
 }
+export type PaymentMethod = 'CARD' | 'BANK_TRANSFER'
+
+export type CreateReservationRequest = {
+  scheduleId: number
+  seatIds: number[]
+  paymentMethod: PaymentMethod
+}
+
+/** POST /api/reservations 응답 */
+export type CreatedReservation = {
+  reservationId: number
+  scheduleId: number
+  status: 'PENDING' | 'CONFIRMED' | 'CANCELED'
+  seats: { seatId: number; section: string; price: number }[]
+  totalAmount: number
+  paidAt: string
+}
