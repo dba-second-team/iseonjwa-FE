@@ -1,5 +1,5 @@
 import { api } from '../../../lib/api-client'
+import type { CancelReservationResult } from '../types'
 
-/** POST /api/reservations/{id}/cancel (API 명세 9번). 본문 없음 */
 export const cancelReservation = (reservationId: number) =>
-  api.post<void>(`/reservations/${reservationId}/cancel`)
+  api.post<CancelReservationResult>(`/reservations/${reservationId}/cancel`)

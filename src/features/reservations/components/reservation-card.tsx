@@ -13,9 +13,10 @@ const STATUS_BUTTON: Record<PaymentStatus, StatusButton> = {
 
 type ReservationCardProps = {
   reservation: MyReservation
+  onCancelClick: (reservationId: number) => void
 }
 
-export function ReservationCard({ reservation }: ReservationCardProps) {
+export function ReservationCard({ reservation, onCancelClick }: ReservationCardProps) {
   const button = STATUS_BUTTON[reservation.paymentStatus]
 
   const details = [
@@ -38,6 +39,7 @@ export function ReservationCard({ reservation }: ReservationCardProps) {
           className={cx('reservation-button', button.cancelable && 'reservation-button-cancel')}
           type="button"
           disabled={!button.cancelable}
+          onClick={() => onCancelClick(reservation.reservationId)}
         >
           {button.label}
         </button>
