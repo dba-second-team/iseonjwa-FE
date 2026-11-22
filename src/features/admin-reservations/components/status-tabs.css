@@ -1,0 +1,22 @@
+.status-tabs {
+  display: flex;
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.status-tab {
+  height: 36px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  color: #fff;
+  background: #3d3d3d;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.status-tab-selected {
+  background: var(--pink);
+}
