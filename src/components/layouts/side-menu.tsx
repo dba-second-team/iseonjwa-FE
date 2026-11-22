@@ -10,7 +10,10 @@ export function SideMenu({ onClose }: { onClose: () => void }) {
 const { user, isAdmin, logout } = useAuth()
 
   const links = isAdmin
-    ? [{ to: '/admin/performances', label: '공연 관리하기' }]
+    ? [
+        { to: '/admin/performances', label: '공연 관리하기' },
+        { to: '/admin/performances/new', label: '공연 등록하기' },
+      ]
     : [{ to: '/my/reservations', label: '나의 공연 예매내역' }]
 
   function handleLogout() {

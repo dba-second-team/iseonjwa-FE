@@ -7,6 +7,7 @@ import { MyReservationsRoute } from './routes/my-reservations'
 import { PerformanceDetailRoute } from './routes/performance-detail'
 import { RootRoute } from './routes/root'
 import { SignupRoute } from './routes/signup'
+import { AdminPerformanceNewRoute } from './routes/admin-performance-new'
 import { AdminPerformancesRoute } from './routes/admin-performances'
 import { AdminReservationsRoute } from './routes/admin-reservations'
 import { RequireAdmin } from './require-admin'
@@ -27,6 +28,7 @@ export const router = createBrowserRouter([
         element: <RequireAdmin />,
         children: [
           { path: 'admin/performances', element: <AdminPerformancesRoute /> },
+          { path: 'admin/performances/new', element: <AdminPerformanceNewRoute /> },
           { path: 'admin/performances/:performanceId/reservations', element: <AdminReservationsRoute /> },
         ],
       },
