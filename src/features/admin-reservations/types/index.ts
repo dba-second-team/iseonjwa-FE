@@ -29,3 +29,14 @@ export type AdminReservationPage = {
   size: number
   totalCount: number
 }
+
+export type AdminRefundItem = {
+  reservationId: number
+  status: PaymentStatus
+  refundAmount: number
+  refundedAt: string
+}
+
+export type AdminRefundResult = {
+  items: AdminRefundItem[]
+}

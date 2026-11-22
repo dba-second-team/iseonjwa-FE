@@ -1,0 +1,51 @@
+.refund-request {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  align-items: center;
+  gap: 24px;
+}
+
+.refund-request-checkbox {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 1px solid var(--muted);
+  border-radius: 2px;
+  background: transparent center / 14px no-repeat;
+  appearance: none;
+  cursor: pointer;
+}
+
+.refund-request-checkbox:checked {
+  border-color: var(--pink);
+  background-color: var(--pink);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 14 14' fill='none'%3E%3Cpath d='m2 7.5 3.2 3L12 3.5' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+
+.refund-request-checkbox:focus-visible {
+  outline-offset: 2px;
+}
+
+.refund-request-card {
+  display: grid;
+  gap: 8px;
+  padding: 20px;
+  border-radius: 4px;
+  background: var(--surface);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.refund-request-row {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 4px;
+}
+
+.refund-request-label {
+  color: var(--muted);
+}
+
+.refund-request-value {
+  overflow-wrap: anywhere;
+}
