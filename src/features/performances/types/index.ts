@@ -2,7 +2,6 @@ export type Genre = 'K_POP' | 'HIPHOP_RANDB' | 'VALLAD' | 'ETC'
 
 export type PerformanceStatus = 'UPCOMING' | 'ON_SALE' | 'SOLD_OUT' | 'CLOSED' | 'CANCELED'
 
-/** GET /api/performances 목록의 한 항목 */
 export type PerformanceSummary = {
   performanceId: number
   title: string
@@ -20,4 +19,24 @@ export type PerformancePage = {
   page: number
   size: number
   totalCount: number
+}
+
+export type PerformanceDetail = {
+  performanceId: number
+  title: string
+  genre: Genre
+  posterUrl: string | null
+  status: PerformanceStatus
+  venueName: string
+  runningTime: number
+  description: string | null
+  maxTicketsPerMember: number
+  startDate: string | null
+  endDate: string | null
+}
+
+export type Schedule = {
+  scheduleId: number
+  round: number
+  startAt: string
 }
