@@ -1,4 +1,3 @@
-import { Link } from 'react-router'
 import { BackHeader } from '../../components/ui/back-header'
 import { AdminPerformanceCard } from '../../features/admin-performances/components/admin-performance-card'
 import { useAdminPerformances } from '../../features/admin-performances/hooks/use-admin-performances'
@@ -47,17 +46,6 @@ export function AdminPerformancesRoute() {
           {isLoadingMore ? '불러오는 중' : '더 보기'}
         </button>
       )}
-
-      <Link className="admin-performances-register" to="/admin/performances/new">
-        <svg width="28" height="20" viewBox="0 0 28 20" fill="none" aria-hidden="true">
-          <path
-            d="M3 3.5 24 1l1 5.2a3 3 0 0 0 0 5.6l1 5.2-21 2.5-1-5.2a3 3 0 0 0 0-5.6z"
-            fill="#fff"
-            fillOpacity="0.9"
-          />
-        </svg>
-        공연 등록
-      </Link>
     </main>
   )
 }

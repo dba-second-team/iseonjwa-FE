@@ -1,5 +1,5 @@
 .admin-performances-page {
-  padding: 0 25px 140px;
+  padding: 0 25px 34px;
 }
 
 .admin-performances-list {
@@ -50,28 +50,4 @@
   color: var(--danger);
   font-size: 13px;
   text-align: center;
-}
-
-.admin-performances-register {
-  position: fixed;
-  right: max(26px, calc((100vw - 430px) / 2 + 26px));
-  bottom: calc(50px + env(safe-area-inset-bottom));
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 52px;
-  padding: 0 22px;
-  border-radius: 999px;
-  color: #fff;
-  background: var(--pink);
-  box-shadow: 0 0 16px rgb(251 36 127 / 0.45);
-  font-size: 17px;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-@media (min-width: 600px) {
-  .admin-performances-register {
-    right: calc((100vw - 393px) / 2 + 26px);
-  }
 }
