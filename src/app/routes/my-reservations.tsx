@@ -78,7 +78,7 @@ export function MyReservationsRoute() {
       {cancelTargetId !== null && (
         <ConfirmDialog
           title="해당 공연을 취소하시겠어요?"
-          description="취소한 공연은 복구되지 않아요."
+          description="취소한 공연은 복구되지 않아요"
           confirmLabel="취소할게요"
           loading={isCanceling}
           error={cancelError}
