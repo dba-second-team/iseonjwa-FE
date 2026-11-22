@@ -11,6 +11,10 @@
   border-radius: 5px;
 }
 
+.performance-poster-empty {
+  background: var(--surface);
+}
+
 .performance-title {
   margin-top: 10.5px;
   overflow: hidden;
