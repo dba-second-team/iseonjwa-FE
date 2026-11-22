@@ -1,10 +1,38 @@
+import { useState } from 'react'
 import { BackHeader } from '../../components/ui/back-header'
+import { ConfirmDialog } from '../../components/ui/confirm-dialog'
+import { getErrorMessage } from '../../lib/api-error'
+import { cancelReservation } from '../../features/reservations/api/cancel-reservation'
 import { ReservationCard } from '../../features/reservations/components/reservation-card'
 import { useMyReservations } from '../../features/reservations/hooks/use-my-reservations'
 import './my-reservations.css'
 
 export function MyReservationsRoute() {
-  const { state, reload, hasMore, isLoadingMore, loadMoreError, loadMore } = useMyReservations()
+  const { state, reload, hasMore, isLoadingMore, loadMoreError, loadMore, markCanceled } = useMyReservations()
+
+  const [cancelTargetId, setCancelTargetId] = useState<number | null>(null)
+  const [isCanceling, setIsCanceling] = useState(false)
+  const [cancelError, setCancelError] = useState<string | null>(null)
+
+  function openCancelDialog(reservationId: number) {
+    setCancelError(null)
+    setCancelTargetId(reservationId)
+  }
+
+  async function confirmCancel() {
+    if (cancelTargetId === null || isCanceling) return
+    setIsCanceling(true)
+    setCancelError(null)
+    try {
+      await cancelReservation(cancelTargetId)
+      markCanceled(cancelTargetId)
+      setCancelTargetId(null)
+    } catch (error) {
+      setCancelError(getErrorMessage(error))
+    } finally {
+      setIsCanceling(false)
+    }
+  }
 
   return (
     <main className="page my-reservations-page">
@@ -27,7 +55,7 @@ export function MyReservationsRoute() {
         <ul className="my-reservations-list">
           {state.reservations.map(reservation => (
             <li key={reservation.reservationId}>
-              <ReservationCard reservation={reservation} />
+              <ReservationCard reservation={reservation} onCancelClick={openCancelDialog} />
             </li>
           ))}
         </ul>
@@ -45,6 +73,18 @@ export function MyReservationsRoute() {
         >
           {isLoadingMore ? '불러오는 중' : '더 보기'}
         </button>
+      )}
+
+      {cancelTargetId !== null && (
+        <ConfirmDialog
+          title="해당 공연을 취소하시겠어요?"
+          description="취소한 공연은 복구되지 않아요."
+          confirmLabel="취소할게요"
+          loading={isCanceling}
+          error={cancelError}
+          onConfirm={confirmCancel}
+          onClose={() => setCancelTargetId(null)}
+        />
       )}
     </main>
   )
