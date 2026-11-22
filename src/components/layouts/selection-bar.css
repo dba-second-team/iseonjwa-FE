@@ -1,0 +1,58 @@
+.selection-bar {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  max-width: 430px;
+  min-height: 88px;
+  margin-inline: auto;
+  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
+  background: #232323;
+}
+
+@media (min-width: 600px) {
+  .selection-bar {
+    max-width: 393px;
+  }
+}
+
+.selection-bar-summary {
+  min-width: 0;
+}
+
+.selection-bar-title {
+  overflow: hidden;
+  font-size: 17px;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selection-bar-description {
+  margin-top: 4px;
+  color: #b4b4b4;
+  font-size: 12px;
+}
+
+.selection-bar-action {
+  flex: none;
+  height: 40px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 4px;
+  color: #fff;
+  background: var(--pink);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.selection-bar-action:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

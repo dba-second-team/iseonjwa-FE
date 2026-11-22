@@ -1,0 +1,39 @@
+/* 구역 선택, 좌석 선택 화면 공통 */
+.booking-select-page {
+  padding: 0 20px calc(120px + env(safe-area-inset-bottom));
+}
+
+.booking-select-title {
+  margin: 20px 0 32px;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.45;
+  white-space: pre-line;
+}
+
+.booking-select-message {
+  margin-top: 80px;
+  color: var(--muted);
+  font-size: 14px;
+  text-align: center;
+}
+
+.booking-select-alert {
+  margin-top: 20px;
+  color: var(--danger);
+  font-size: 13px;
+  text-align: center;
+}
+
+.booking-select-retry {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 10px 20px;
+  border: 1px solid var(--muted);
+  border-radius: 4px;
+  color: #fff;
+  background: transparent;
+  font-size: 13px;
+  text-decoration: none;
+  cursor: pointer;
+}
