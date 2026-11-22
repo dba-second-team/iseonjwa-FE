@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router'
-import { BackHeader } from '../../components/ui/back-header'
+import { BackHeader } from '../../components/layouts/back-header'
 import { LoginForm, type LoginMode } from '../../features/auth/components/login-form'
 import { useAuth } from '../../lib/auth'
 import './login.css'
@@ -20,7 +20,7 @@ export function LoginRoute({ mode = 'member' }: LoginRouteProps) {
   const { isLoggedIn, isAdmin } = useAuth()
 
   const state = location.state as { from?: string; signedUpEmail?: string } | null
-  const redirectTo = state?.from ?? '/'
+  const redirectTo = state?.from ?? (mode === 'admin' ? '/admin/performances' : '/')
 
   if (mode === 'admin' ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
 

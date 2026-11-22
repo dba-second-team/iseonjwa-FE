@@ -1,5 +1,5 @@
 import { Navigate, useNavigate } from 'react-router'
-import { BackHeader } from '../../components/ui/back-header'
+import { BackHeader } from '../../components/layouts/back-header'
 import { SignupForm } from '../../features/auth/components/signup-form'
 import { useAuth } from '../../lib/auth'
 import './signup.css'

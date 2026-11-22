@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { BackHeader } from '../../components/ui/back-header'
 import { ConfirmDialog } from '../../components/ui/confirm-dialog'
 import { getErrorMessage } from '../../lib/api-error'
 import { cancelReservation } from '../../features/reservations/api/cancel-reservation'

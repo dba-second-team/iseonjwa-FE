@@ -1,0 +1,27 @@
+.admin-reservation-card {
+  padding: 20px;
+  border-radius: 4px;
+  background: var(--surface);
+}
+
+.admin-reservation-details {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+}
+
+.admin-reservation-detail {
+  display: grid;
+  grid-template-columns: 68px 1fr;
+  gap: 4px;
+}
+
+.admin-reservation-detail dt {
+  color: var(--muted);
+}
+
+.admin-reservation-detail dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
