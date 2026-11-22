@@ -20,7 +20,7 @@ export function LoginRoute({ mode = 'member' }: LoginRouteProps) {
   const { isLoggedIn, isAdmin } = useAuth()
 
   const state = location.state as { from?: string; signedUpEmail?: string } | null
-  const redirectTo = state?.from ?? '/'
+  const redirectTo = state?.from ?? (mode === 'admin' ? '/admin/performances' : '/')
 
   if (mode === 'admin' ? isAdmin : isLoggedIn) return <Navigate to={redirectTo} replace />
 
