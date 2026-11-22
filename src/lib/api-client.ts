@@ -18,8 +18,11 @@ async function request<T>(method: string, path: string, options: RequestOptions 
   const { body, headers: initHeaders, ...init } = options
 
   const headers = new Headers(initHeaders)
+  // FormData는 브라우저가 boundary를 포함한 Content-Type을 직접 붙이므로 건드리지 않음
+  const isFormData = body instanceof FormData
+
   headers.set('Accept', 'application/json')
-  if (body !== undefined) headers.set('Content-Type', 'application/json')
+  if (body !== undefined && !isFormData) headers.set('Content-Type', 'application/json')
 
   const user = getAuthUser()
   if (user && !headers.has('X-Member-Id')) headers.set('X-Member-Id', String(user.memberId))
@@ -30,7 +33,7 @@ async function request<T>(method: string, path: string, options: RequestOptions 
       ...init,
       method,
       headers,
-      body: body === undefined ? undefined : JSON.stringify(body),
+      body: body === undefined ? undefined : isFormData ? body : JSON.stringify(body),
     })
   } catch (error) {
     // 요청 취소는 에러 화면을 띄우면 안 되니 그대로 던짐
