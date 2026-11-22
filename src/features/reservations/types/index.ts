@@ -26,3 +26,11 @@ export type MyReservationPage = {
   size: number
   totalCount: number
 }
+
+export type CancelReservationResult = {
+  reservationId: number
+  status: 'CANCELED'
+  paidAmount: number
+  cancelFee: number
+  refundAmount: number
+}

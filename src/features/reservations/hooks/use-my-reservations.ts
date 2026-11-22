@@ -75,5 +75,19 @@ export function useMyReservations() {
     }
   }
 
-  return { state, reload, hasMore, isLoadingMore, loadMoreError, loadMore }
+  const markCanceled = useCallback((reservationId: number) => {
+    setState(prev => {
+      if (prev.status !== 'success') return prev
+      return {
+        ...prev,
+        reservations: prev.reservations.map(reservation =>
+          reservation.reservationId === reservationId
+            ? { ...reservation, paymentStatus: 'CANCELED' }
+            : reservation,
+        ),
+      }
+    })
+  }, [])
+
+  return { state, reload, hasMore, isLoadingMore, loadMoreError, loadMore, markCanceled }
 }
