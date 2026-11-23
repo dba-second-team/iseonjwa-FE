@@ -9,10 +9,10 @@
   gap: 12px;
   width: 100%;
   max-width: 430px;
-  min-height: 88px;
   margin-inline: auto;
-  padding: 16px 20px calc(16px + env(safe-area-inset-bottom));
-  background: #232323;
+  padding: 29px 24px max(29px, calc(16px + env(safe-area-inset-bottom)));
+  background: #202022;
+  box-shadow: 0 -4px 6px rgb(0 0 0 / 8%);
 }
 
 @media (min-width: 600px) {
@@ -27,27 +27,29 @@
 
 .selection-bar-title {
   overflow: hidden;
-  font-size: 17px;
+  font-size: 22px;
   font-weight: 700;
+  line-height: 26px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .selection-bar-description {
-  margin-top: 4px;
-  color: #b4b4b4;
-  font-size: 12px;
+  margin-top: 6px;
+  color: #b3b3bb;
+  font-size: 14px;
+  line-height: 16px;
 }
 
 .selection-bar-action {
   flex: none;
-  height: 40px;
-  padding: 0 16px;
+  height: 48px;
+  padding: 0 21px;
   border: 0;
   border-radius: 4px;
   color: #fff;
   background: var(--pink);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
 }

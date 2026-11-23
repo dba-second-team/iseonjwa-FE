@@ -1,6 +1,6 @@
 .section-map {
   width: 100%;
-  max-width: 328px;
+  max-width: 327px;
   margin: 0 auto;
 }
 
@@ -11,7 +11,7 @@
 }
 
 .section-map-ring {
-  fill: #29292b;
+  fill: #27272a;
 }
 
 .section-map-divider {
@@ -24,37 +24,35 @@
 }
 
 .section-map-block {
-  fill: #2e2e31;
+  fill: #29292d;
 }
 
 .section-map-block,
 polygon.section-map-shape {
   stroke: #1b1b1b;
-  stroke-width: 6;
-  stroke-linejoin: round;
+  stroke-width: 4;
+}
+
+.section-map-shape,
+.section-map-stage {
+  fill: #606068;
 }
 
 .section-map-shape {
-  fill: #626266;
   transition: fill 0.15s;
-}
-
-.section-map-stage {
-  fill: #626266;
 }
 
 .section-map-label {
   fill: #fff;
-  font-size: 19px;
+  font-size: 20px;
   font-weight: 600;
   text-anchor: middle;
-  dominant-baseline: central;
   pointer-events: none;
   user-select: none;
 }
 
 .section-map-stage-label {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .section-map-section {
@@ -71,11 +69,11 @@ polygon.section-map-shape {
 }
 
 .section-map-section[aria-disabled='true'] .section-map-shape {
-  fill: #38383b;
+  fill: #38383d;
 }
 
 .section-map-section[aria-disabled='true'] .section-map-label {
-  fill: #6f6f6f;
+  fill: #6f6f74;
 }
 
 .section-map-section:focus-visible .section-map-shape {
@@ -85,6 +83,6 @@ polygon.section-map-shape {
 
 @media (hover: hover) {
   .section-map-section:not(.is-selected, [aria-disabled='true']):hover .section-map-shape {
-    fill: #747478;
+    fill: #707078;
   }
 }
