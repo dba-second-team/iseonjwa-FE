@@ -3,7 +3,6 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import ticketWaiting from '../../assets/booking/ticket-waiting.svg'
 import { BackHeader } from '../../components/layouts/back-header'
 import { paths } from '../../config/paths'
-import { useLeaveQueueOnPageHide } from '../../features/queue/hooks/use-leave-queue-on-page-hide'
 import { useWaitingQueue, type WaitingQueueState } from '../../features/queue/hooks/use-waiting-queue'
 import { parseId } from '../../utils/parse-id'
 import './booking-queue.css'
@@ -18,8 +17,7 @@ export function BookingQueueRoute() {
 
 function BookingQueue({ performanceId }: { performanceId: number }) {
   const navigate = useNavigate()
-  const { state, retry } = useWaitingQueue(performanceId)
-  useLeaveQueueOnPageHide(state.status === 'waiting')
+  const { state, retry, startHere } = useWaitingQueue(performanceId)
 
   // 입장할 수 있게 되면 회차 선택으로. 뒤로 가기로 대기 화면에 돌아오지 않게 replace
   useEffect(() => {
@@ -36,6 +34,16 @@ function BookingQueue({ performanceId }: { performanceId: number }) {
         <div className="queue-message" role="alert">
           <p>{state.message}</p>
           <button className="queue-action" type="button" onClick={retry}>다시 시도</button>
+        </div>
+      ) : state.status === 'other-window' ? (
+        <div className="queue-message" role="alert">
+          <p>다른 창에서 이미 예매를 진행하고 있어요.</p>
+          <button className="queue-action" type="button" onClick={startHere}>이 창에서 예매하기</button>
+        </div>
+      ) : state.status === 'taken-over' ? (
+        <div className="queue-message" role="alert">
+          <p>다른 창에서 예매를 시작해서 이 창의 대기가 끝났어요.</p>
+          <Link className="queue-action" to={paths.home()} replace>홈으로 가기</Link>
         </div>
       ) : state.status === 'other-performance' ? (
         <div className="queue-message" role="alert">
