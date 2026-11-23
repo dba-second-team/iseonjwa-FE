@@ -33,7 +33,8 @@ type BookingSeatsProps = {
 function BookingSeats({ performanceId, scheduleId, section }: BookingSeatsProps) {
   const navigate = useNavigate()
   const { state, reload } = useSeatMap(performanceId, scheduleId)
-  const [selectedIds, setSelectedIds] = useState<ReadonlySet<number>>(() => new Set())
+  // 아직 고르지 않았으면 null. 이때는 이미 선점해 둔 좌석을 선택한 상태로 보여 준다
+  const [selectedIds, setSelectedIds] = useState<ReadonlySet<number> | null>(null)
   const [message, setMessage] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
@@ -65,7 +66,8 @@ function BookingSeats({ performanceId, scheduleId, section }: BookingSeatsProps)
   const limit = state.performance.maxTicketsPerMember
   const sectionSeats = state.seats.filter(seat => seat.section === section)
   // 다시 불러온 좌석에서 선택할 수 없게 된 좌석은 선택에서 뺌
-  const selectedSeats = sectionSeats.filter(seat => selectedIds.has(seat.seatId) && isSelectable(seat))
+  const selectedSeats = sectionSeats.filter(seat =>
+    isSelectable(seat) && (selectedIds === null ? seat.heldByMe : selectedIds.has(seat.seatId)))
   const totalPrice = sumPrices(selectedSeats)
 
   function toggle(seat: Seat) {
@@ -88,9 +90,8 @@ function BookingSeats({ performanceId, scheduleId, section }: BookingSeatsProps)
     setSubmitting(true)
     setMessage(null)
     try {
-      // 이미 내가 선점한 좌석을 다시 선점하면 409가 나서 새로 고른 좌석만 요청
-      const seatIdsToHold = selectedSeats.filter(seat => !seat.heldByMe).map(seat => seat.seatId)
-      if (seatIdsToHold.length > 0) await holdSeats(scheduleId, seatIdsToHold)
+      // 서버는 이 회차에서 내가 선점한 좌석을 요청한 좌석으로 교체하므로 선택한 좌석을 모두 보냄
+      await holdSeats(scheduleId, selectedSeats.map(seat => seat.seatId))
 
       const nextState: HeldSeatsState = { seats: selectedSeats }
       navigate(paths.booking.confirm(performanceId, scheduleId), { state: nextState })
