@@ -11,26 +11,20 @@ import './booking-queue.css'
 export function BookingQueueRoute() {
   const params = useParams()
   const performanceId = parseId(params.performanceId)
-  const scheduleId = parseId(params.scheduleId)
 
-  if (performanceId === null || scheduleId === null) return <Navigate to={paths.home()} replace />
-  return <BookingQueue key={performanceId} performanceId={performanceId} scheduleId={scheduleId} />
+  if (performanceId === null) return <Navigate to={paths.home()} replace />
+  return <BookingQueue key={performanceId} performanceId={performanceId} />
 }
 
-type BookingQueueProps = {
-  performanceId: number
-  scheduleId: number
-}
-
-function BookingQueue({ performanceId, scheduleId }: BookingQueueProps) {
+function BookingQueue({ performanceId }: { performanceId: number }) {
   const navigate = useNavigate()
   const { state, retry } = useWaitingQueue(performanceId)
   useLeaveQueueOnPageHide(state.status === 'waiting')
 
-  // 입장할 수 있게 되면 구역 선택으로. 뒤로 가기로 대기 화면에 돌아오지 않게 replace
+  // 입장할 수 있게 되면 회차 선택으로. 뒤로 가기로 대기 화면에 돌아오지 않게 replace
   useEffect(() => {
-    if (state.status === 'ready') navigate(paths.booking.sections(performanceId, scheduleId), { replace: true })
-  }, [state.status, navigate, performanceId, scheduleId])
+    if (state.status === 'ready') navigate(paths.booking.schedules(performanceId), { replace: true })
+  }, [state.status, navigate, performanceId])
 
   return (
     <main className="page queue-page">

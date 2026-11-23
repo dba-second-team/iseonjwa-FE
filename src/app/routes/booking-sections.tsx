@@ -24,7 +24,7 @@ function BookingSections({ performanceId, scheduleId }: { performanceId: number;
   const { state, reload } = useSeatMap(performanceId, scheduleId)
   const [selected, setSelected] = useState<SeatSection | null>(null)
 
-  const header = <BackHeader title="예매하기" fallbackTo={paths.performance(performanceId)} />
+  const header = <BackHeader title="예매하기" fallbackTo={paths.booking.schedules(performanceId)} />
 
   if (state.status === 'loading') {
     return (
