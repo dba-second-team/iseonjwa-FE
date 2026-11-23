@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router'
-import ticketWaiting from '../../assets/booking/ticket-waiting.png'
+import ticketWaiting from '../../assets/booking/ticket-waiting.svg'
 import { BackHeader } from '../../components/layouts/back-header'
 import { paths } from '../../config/paths'
 import { useWaitingQueue, type WaitingQueueState } from '../../features/queue/hooks/use-waiting-queue'
@@ -34,7 +34,7 @@ function BookingQueue({ performanceId, scheduleId }: BookingQueueProps) {
     <main className="page queue-page">
       <BackHeader title="예매하기" fallbackTo={paths.performance(performanceId)} />
 
-      <img className="queue-illustration" src={ticketWaiting} width="202" height="186" alt="" />
+      <img className="queue-illustration" src={ticketWaiting} width="220" height="195" alt="" />
 
       {state.status === 'error' ? (
         <div className="queue-message" role="alert">
