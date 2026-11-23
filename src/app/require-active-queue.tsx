@@ -1,7 +1,8 @@
-import { Link, Navigate, Outlet, useLocation, useParams } from 'react-router'
+import { Navigate, Outlet, useLocation, useNavigate, useParams } from 'react-router'
 import { BackHeader } from '../components/layouts/back-header'
 import { paths } from '../config/paths'
 import { useActiveAdmission } from '../features/queue/hooks/use-active-admission'
+import type { BookingQueueState } from '../features/queue/types'
 import { parseId } from '../utils/parse-id'
 import './routes/booking-select.css'
 
@@ -16,7 +17,13 @@ export function RequireActiveQueue() {
 
 function ActiveQueueGate({ performanceId }: { performanceId: number }) {
   const location = useLocation()
+  const navigate = useNavigate()
   const { state, retry } = useActiveAdmission(performanceId, location.pathname)
+
+  function startHere() {
+    const nextState: BookingQueueState = { takeOver: true }
+    navigate(paths.booking.queue(performanceId), { replace: true, state: nextState })
+  }
 
   if (state.status === 'admitted') return <Outlet />
   if (state.status === 'kicked') return <Navigate to={paths.performance(performanceId)} replace />
@@ -29,12 +36,7 @@ function ActiveQueueGate({ performanceId }: { performanceId: number }) {
       ) : state.status === 'other-window' ? (
         <div className="booking-select-message" role="alert">
           <p>다른 창에서 이미 예매를 진행하고 있어요.</p>
-          <Link className="booking-select-retry" to={paths.home()} replace>홈으로 가기</Link>
-        </div>
-      ) : state.status === 'taken-over' ? (
-        <div className="booking-select-message" role="alert">
-          <p>다른 창에서 예매를 시작해서 이 창의 예매가 끝났어요.</p>
-          <Link className="booking-select-retry" to={paths.home()} replace>홈으로 가기</Link>
+          <button className="booking-select-retry" type="button" onClick={startHere}>이 창에서 예매하기</button>
         </div>
       ) : (
         <div className="booking-select-message" role="alert">

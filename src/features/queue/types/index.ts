@@ -28,3 +28,8 @@ export type ActiveAdmission = {
   /** 이 시각까지 예매를 마쳐야 함 */
   expiresAt: string
 }
+
+/** 예매 화면에서 "이 창에서 예매하기"를 눌러 대기 화면으로 올 때 넘기는 location.state */
+export type BookingQueueState = {
+  takeOver: boolean
+}

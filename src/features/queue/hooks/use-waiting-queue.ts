@@ -6,7 +6,7 @@ import { leaveQueue } from '../api/leave-queue'
 import { registerWaiting } from '../api/register-waiting'
 import type { QueueState } from '../types'
 import { clearInitialPosition, getQueueProgress } from '../utils/progress'
-import { claimQueue, isQueueOwner, releaseQueue, wasReloadedAt } from '../utils/queue-session'
+import { claimQueue, isQueueOwner, onQueueLost, releaseQueue, wasReloadedAt } from '../utils/queue-session'
 
 /** 순번을 다시 물어보는 간격 */
 const POLL_INTERVAL_MS = 2000
@@ -17,7 +17,6 @@ export type WaitingQueueState =
   | { status: 'ready' }
   | { status: 'other-performance' }
   | { status: 'other-window' }
-  | { status: 'taken-over' }
   | { status: 'error'; message: string }
 
 function isApiError(error: unknown, code: string): boolean {
@@ -34,9 +33,10 @@ function isApiError(error: unknown, code: string): boolean {
  * 4. canEnter가 true면 작업열 입장 요청, 성공하면 ready
  *    (그 사이 자리가 찼으면 409 CANNOT_ENTER_ACTIVE_QUEUE가 오므로 계속 대기)
  */
-export function useWaitingQueue(performanceId: number) {
+/** startWithTakeOver가 true면 처음부터 다른 탭의 대기를 끝내고 이 탭에서 다시 대기한다 */
+export function useWaitingQueue(performanceId: number, startWithTakeOver = false) {
   const [retryCount, setRetryCount] = useState(0)
-  const [takeOver, setTakeOver] = useState(false)
+  const [takeOver, setTakeOver] = useState(startWithTakeOver)
   const [state, setState] = useState<WaitingQueueState>({ status: 'loading' })
 
   useEffect(() => {
@@ -61,6 +61,8 @@ export function useWaitingQueue(performanceId: number) {
       }
 
       if (takeOver || wasReloadedAt(window.location.pathname)) {
+        // 기존 탭이 대기를 이어가지 않도록 빠지기 전에 먼저 알린다
+        claimQueue(performanceId)
         await leaveQueue()
         await register()
         return getQueueStatus({ signal })
@@ -129,7 +131,7 @@ export function useWaitingQueue(performanceId: number) {
       // 다른 탭에서 이 창의 대기를 가져간 경우
       if (isApiError(error, 'QUEUE_ENTRY_NOT_FOUND')) {
         releaseQueue()
-        setState({ status: 'taken-over' })
+        setState({ status: 'other-window' })
         return
       }
       setState({ status: 'error', message: getErrorMessage(error) })
@@ -146,6 +148,12 @@ export function useWaitingQueue(performanceId: number) {
       }, POLL_INTERVAL_MS)
     }
 
+    const stopListening = onQueueLost(() => {
+      controller.abort()
+      clearTimeout(timer)
+      setState({ status: 'other-window' })
+    })
+
     enterOrResume()
       .then(apply)
       .then(keepPolling => {
@@ -156,6 +164,7 @@ export function useWaitingQueue(performanceId: number) {
     return () => {
       controller.abort()
       clearTimeout(timer)
+      stopListening()
     }
   }, [performanceId, retryCount, takeOver])
 
