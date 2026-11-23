@@ -7,7 +7,7 @@ import { holdSeats } from '../../features/seats/api/hold-seats'
 import { SeatGrid } from '../../features/seats/components/seat-grid'
 import { useSeatMap } from '../../features/seats/hooks/use-seat-map'
 import type { HeldSeatsState, Seat, SeatSection } from '../../features/seats/types'
-import { formatPrice, formatSeatLabels, isSeatSection, isSelectable } from '../../features/seats/utils/seat'
+import { formatPrice, formatSeatLabels, isSeatSection, isSelectable, sumPrices } from '../../features/seats/utils/seat'
 import { ApiError, getErrorMessage } from '../../lib/api-error'
 import { parseId } from '../../utils/parse-id'
 import './booking-select.css'
@@ -66,7 +66,7 @@ function BookingSeats({ performanceId, scheduleId, section }: BookingSeatsProps)
   const sectionSeats = state.seats.filter(seat => seat.section === section)
   // 다시 불러온 좌석에서 선택할 수 없게 된 좌석은 선택에서 뺌
   const selectedSeats = sectionSeats.filter(seat => selectedIds.has(seat.seatId) && isSelectable(seat))
-  const totalPrice = selectedSeats.reduce((sum, seat) => sum + seat.price, 0)
+  const totalPrice = sumPrices(selectedSeats)
 
   function toggle(seat: Seat) {
     setMessage(null)
