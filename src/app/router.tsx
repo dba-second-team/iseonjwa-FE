@@ -1,6 +1,7 @@
 import { createBrowserRouter } from 'react-router'
 import { RequireAuth } from './require-auth'
 import { BookingConfirmRoute } from './routes/booking-confirm'
+import { BookingLayout } from './routes/booking-layout'
 import { BookingQueueRoute } from './routes/booking-queue'
 import { BookingSeatsRoute } from './routes/booking-seats'
 import { BookingSectionsRoute } from './routes/booking-sections'
@@ -41,10 +42,16 @@ export const router = createBrowserRouter([
         element: <RequireAuth />,
         children: [
           { path: 'my/reservations', element: <MyReservationsRoute /> },
-          { path: 'performances/:performanceId/schedules/:scheduleId/queue', element: <BookingQueueRoute /> },
-          { path: 'performances/:performanceId/schedules/:scheduleId/sections', element: <BookingSectionsRoute /> },
-          { path: 'performances/:performanceId/schedules/:scheduleId/seats', element: <BookingSeatsRoute /> },
-          { path: 'performances/:performanceId/schedules/:scheduleId/confirm', element: <BookingConfirmRoute /> },
+          {
+            path: 'performances/:performanceId/schedules/:scheduleId',
+            element: <BookingLayout />,
+            children: [
+              { path: 'queue', element: <BookingQueueRoute /> },
+              { path: 'sections', element: <BookingSectionsRoute /> },
+              { path: 'seats', element: <BookingSeatsRoute /> },
+              { path: 'confirm', element: <BookingConfirmRoute /> },
+            ],
+          },
           { path: 'reservations/:reservationId/complete', element: <ReservationCompleteRoute /> },
         ],
       },
