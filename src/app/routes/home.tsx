@@ -41,8 +41,8 @@ export function HomeRoute() {
             <rect y="11" width="19" height="2.5" rx="1.25" fill="currentColor" />
           </svg>
         </button>
-        <h1 id="hero-title" className="hero-title">기다리던 콘서트,<br />내 티켓으로.</h1>
-        <p className="hero-description">취향에 맞는 공연을 만나보세요.</p>
+        <h1 id="hero-title" className="hero-title">기다리던 콘서트,<br />내 티켓으로</h1>
+        <p className="hero-description">취향에 맞는 공연을 만나보세요</p>
       </section>
       <section className="performance-section" aria-label="공연 목록" aria-busy={state.status === 'loading' || undefined}>
         {state.status === 'loading' && <p className="performance-message">공연 목록을 불러오는 중이에요.</p>}
