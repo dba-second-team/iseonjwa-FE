@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router'
-import ticketComplete from '../../assets/booking/ticket-complete.png'
+import ticketComplete from '../../assets/booking/ticket-complete.svg'
 import { Button } from '../../components/ui/button'
 import { paths } from '../../config/paths'
 import './reservation-complete.css'
