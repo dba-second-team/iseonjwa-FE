@@ -8,8 +8,23 @@
 
 let ownedPerformanceId: number | null = null
 
+/**
+ * 서버는 회원 단위로 상태를 돌려줘서, 다른 탭이 대기를 새로 시작해도 이 탭은 알 수 없다
+ * 그래서 같은 브라우저의 탭끼리 "내가 예매를 가져갔다"를 직접 알린다
+ */
+const channel = typeof BroadcastChannel === 'undefined' ? null : new BroadcastChannel('iseonjwa.queue')
+const lostListeners = new Set<() => void>()
+
+channel?.addEventListener('message', () => {
+  if (ownedPerformanceId === null) return
+  ownedPerformanceId = null
+  lostListeners.forEach(listener => listener())
+})
+
+/** 이 탭을 예매 주인으로 정하고, 다른 탭에는 예매를 내려놓으라고 알린다 */
 export function claimQueue(performanceId: number) {
   ownedPerformanceId = performanceId
+  channel?.postMessage('claim')
 }
 
 export function releaseQueue() {
@@ -19,6 +34,14 @@ export function releaseQueue() {
 export function isQueueOwner(performanceId?: number): boolean {
   if (ownedPerformanceId === null) return false
   return performanceId === undefined || ownedPerformanceId === performanceId
+}
+
+/** 다른 탭이 예매를 가져가 이 탭이 주인이 아니게 되면 호출된다 */
+export function onQueueLost(listener: () => void): () => void {
+  lostListeners.add(listener)
+  return () => {
+    lostListeners.delete(listener)
+  }
 }
 
 const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined

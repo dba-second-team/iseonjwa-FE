@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { ApiError, getErrorMessage } from '../../../lib/api-error'
 import { getQueueStatus } from '../api/get-queue-status'
 import { leaveQueue } from '../api/leave-queue'
-import { isQueueOwner, releaseQueue, wasReloadedAt } from '../utils/queue-session'
+import { isQueueOwner, onQueueLost, releaseQueue, wasReloadedAt } from '../utils/queue-session'
 
 /** 예매 화면에 머무는 동안 작업열 상태를 다시 확인하는 간격 */
 const RECHECK_INTERVAL_MS = 3000
@@ -12,7 +12,6 @@ export type ActiveAdmissionState =
   | { status: 'admitted' }
   | { status: 'kicked' }
   | { status: 'other-window' }
-  | { status: 'taken-over' }
   | { status: 'error'; message: string }
 
 /**
@@ -22,7 +21,7 @@ export type ActiveAdmissionState =
  * 새로고침한 탭은 작업열에서 빼고 내보내고, 복제하거나 새로 연 탭은 다른 창에서 진행 중이라고 알린다
  *
  * checkKey가 바뀔 때마다 다시 확인한다 (화면을 옮길 때 작업열 만료를 다시 보기 위해)
- * 한 화면에 머무는 동안에도 일정 간격과 탭으로 돌아올 때 다시 확인해서, 다른 창이 예매를 가져가면 바로 알린다
+ * 같은 브라우저의 다른 탭이 예매를 가져가면 바로 막고, 그 밖의 경우를 위해 일정 간격과 탭으로 돌아올 때도 다시 확인한다
  * 다시 확인하는 동안에는 이전 결과를 유지해 화면이 깜빡이지 않게 한다
  */
 export function useActiveAdmission(performanceId: number, checkKey: string) {
@@ -63,7 +62,7 @@ export function useActiveAdmission(performanceId: number, checkKey: string) {
             } else if (queue.performanceId === performanceId) {
               // 다른 창에서 "이 창에서 예매하기"로 대기를 새로 시작한 경우
               releaseQueue()
-              stop({ status: 'taken-over' })
+              stop({ status: 'other-window' })
             } else {
               kick()
             }
@@ -97,6 +96,8 @@ export function useActiveAdmission(performanceId: number, checkKey: string) {
       if (document.visibilityState === 'visible') check()
     }
 
+    const stopListening = onQueueLost(() => stop({ status: 'other-window' }))
+
     check()
     const timer = setInterval(check, RECHECK_INTERVAL_MS)
     document.addEventListener('visibilitychange', onVisibilityChange)
@@ -105,6 +106,7 @@ export function useActiveAdmission(performanceId: number, checkKey: string) {
       controller.abort()
       clearInterval(timer)
       document.removeEventListener('visibilitychange', onVisibilityChange)
+      stopListening()
     }
   }, [performanceId, checkKey, retryCount])
 
