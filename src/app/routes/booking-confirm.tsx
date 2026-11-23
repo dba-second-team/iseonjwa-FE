@@ -9,7 +9,7 @@ import { formatGenre, formatScheduleOption } from '../../features/performances/u
 import { createReservation } from '../../features/reservations/api/create-reservation'
 import { ReservationReviewDialog } from '../../features/reservations/components/reservation-review-dialog'
 import type { HeldSeatsState, Seat } from '../../features/seats/types'
-import { formatPrice, formatSeatLabels } from '../../features/seats/utils/seat'
+import { formatPrice, formatSeatLabels, sumPrices } from '../../features/seats/utils/seat'
 import { ApiError, getErrorMessage } from '../../lib/api-error'
 import { useAuth } from '../../lib/auth'
 import { parseId } from '../../utils/parse-id'
@@ -92,7 +92,7 @@ function BookingConfirmView({ header, performance, schedule, seats }: BookingCon
   const [holdExpired, setHoldExpired] = useState(false)
 
   const { date, time } = formatScheduleOption(schedule.startAt)
-  const totalPrice = seats.reduce((sum, seat) => sum + seat.price, 0)
+  const totalPrice = sumPrices(seats)
   const seatsPath = paths.booking.seats(performance.performanceId, schedule.scheduleId, seats[0].section)
 
   function closeDialog() {

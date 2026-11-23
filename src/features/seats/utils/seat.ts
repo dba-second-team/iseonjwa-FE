@@ -6,7 +6,11 @@ export function isSeatSection(value: string | null): value is SeatSection {
 
 /** 내가 선점한 좌석도 다시 고를 수 있음 */
 export function isSelectable(seat: Seat): boolean {
-  return seat.status === 'AVAILABLE' || seat.heldByMe
+  return seat.price !== null && (seat.status === 'AVAILABLE' || seat.heldByMe)
+}
+
+export function sumPrices(seats: Seat[]): number {
+  return seats.reduce((sum, seat) => sum + (seat.price ?? 0), 0)
 }
 
 export function summarizeSections(seats: Seat[]): Map<SeatSection, SectionSummary> {
