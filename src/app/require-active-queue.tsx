@@ -5,27 +5,21 @@ import { useActiveAdmission } from '../features/queue/hooks/use-active-admission
 import { parseId } from '../utils/parse-id'
 import './routes/booking-select.css'
 
-/** 예매 작업열에 입장한 회원만 구역 선택부터 예매 확인까지 볼 수 있게 한다 */
+/** 예매 작업열에 입장한 회원만 회차 선택부터 예매 확인까지 볼 수 있게 한다 */
 export function RequireActiveQueue() {
   const params = useParams()
   const performanceId = parseId(params.performanceId)
-  const scheduleId = parseId(params.scheduleId)
 
-  if (performanceId === null || scheduleId === null) return <Navigate to={paths.home()} replace />
-  return <ActiveQueueGate key={performanceId} performanceId={performanceId} scheduleId={scheduleId} />
+  if (performanceId === null) return <Navigate to={paths.home()} replace />
+  return <ActiveQueueGate key={performanceId} performanceId={performanceId} />
 }
 
-type ActiveQueueGateProps = {
-  performanceId: number
-  scheduleId: number
-}
-
-function ActiveQueueGate({ performanceId, scheduleId }: ActiveQueueGateProps) {
+function ActiveQueueGate({ performanceId }: { performanceId: number }) {
   const location = useLocation()
   const { state, retry } = useActiveAdmission(performanceId, location.pathname)
 
   if (state.status === 'admitted') return <Outlet />
-  if (state.status === 'not-admitted') return <Navigate to={paths.booking.queue(performanceId, scheduleId)} replace />
+  if (state.status === 'not-admitted') return <Navigate to={paths.booking.queue(performanceId)} replace />
 
   return (
     <main className="page booking-select-page">

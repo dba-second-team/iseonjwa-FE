@@ -3,7 +3,6 @@ import { Link, useNavigate, useParams } from 'react-router'
 import { BackHeader } from '../../components/layouts/back-header'
 import { paths } from '../../config/paths'
 import { Button } from '../../components/ui/button'
-import { ScheduleSheet } from '../../features/performances/components/schedule-sheet'
 import { usePerformanceDetail } from '../../features/performances/hooks/use-performance-detail'
 import type { PerformanceDetail, Schedule } from '../../features/performances/types'
 import {
@@ -67,14 +66,12 @@ function PerformanceDetailView({ performance, schedules }: PerformanceDetailView
   const navigate = useNavigate()
   const { isLoggedIn } = useAuth()
   const [tab, setTab] = useState<Tab>('intro')
-  const [sheetOpen, setSheetOpen] = useState(false)
   const tabsId = useId()
 
   const unavailableLabel = getUnavailableLabel(performance.status, schedules.length)
 
-  function selectSchedule(schedule: Schedule) {
-    const nextPath = paths.booking.queue(performance.performanceId, schedule.scheduleId)
-    setSheetOpen(false)
+  function startBooking() {
+    const nextPath = paths.booking.queue(performance.performanceId)
     if (isLoggedIn) navigate(nextPath)
     else navigate('/login', { state: { from: nextPath } })
   }
@@ -202,13 +199,9 @@ function PerformanceDetailView({ performance, schedules }: PerformanceDetailView
             {unavailableLabel}
           </button>
         ) : (
-          <Button onClick={() => setSheetOpen(true)}>예매하기</Button>
+          <Button onClick={startBooking}>예매하기</Button>
         )}
       </div>
-
-      {sheetOpen && (
-        <ScheduleSheet schedules={schedules} onSelect={selectSchedule} onClose={() => setSheetOpen(false)} />
-      )}
     </main>
   )
 }

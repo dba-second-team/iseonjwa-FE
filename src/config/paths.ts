@@ -10,7 +10,8 @@ export const paths = {
   home: () => '/',
   performance: (performanceId: number) => `/performances/${performanceId}`,
   booking: {
-    queue: (performanceId: number, scheduleId: number) => `${bookingBase(performanceId, scheduleId)}/queue`,
+    queue: (performanceId: number) => `/performances/${performanceId}/queue`,
+    schedules: (performanceId: number) => `/performances/${performanceId}/schedules`,
     sections: (performanceId: number, scheduleId: number) => `${bookingBase(performanceId, scheduleId)}/sections`,
     seats: (performanceId: number, scheduleId: number, section: string) =>
       `${bookingBase(performanceId, scheduleId)}/seats?section=${encodeURIComponent(section)}`,

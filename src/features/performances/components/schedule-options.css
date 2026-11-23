@@ -1,46 +1,19 @@
-.schedule-sheet {
-  width: 100%;
-  max-width: 430px;
-  max-height: 80svh;
-  margin: auto auto 0;
+.schedule-options {
+  display: grid;
+  gap: 10px;
+  margin: 0;
   padding: 0;
   border: 0;
-  border-radius: 16px 16px 0 0;
-  color: #fff;
-  background: #1b1b1b;
 }
 
-@media (min-width: 600px) {
-  .schedule-sheet {
-    max-width: 393px;
-  }
-}
-
-.schedule-sheet::backdrop {
-  background: rgb(0 0 0 / 72%);
-}
-
-.schedule-sheet-body {
-  padding: 28px 20px calc(20px + env(safe-area-inset-bottom));
-}
-
-/* 화면에는 제목을 숨기고 스크린리더에만 읽힘 (Figma에 제목 없음) */
-.schedule-sheet-title,
-.schedule-sheet-legend {
+/* 화면에는 숨기고 스크린리더에만 읽힘 */
+.schedule-options-legend {
   position: absolute;
   width: 1px;
   height: 1px;
   overflow: hidden;
   clip-path: inset(50%);
   white-space: nowrap;
-}
-
-.schedule-sheet-options {
-  display: grid;
-  gap: 10px;
-  margin: 0 0 28px;
-  padding: 0;
-  border: 0;
 }
 
 .schedule-option {
