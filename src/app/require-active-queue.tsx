@@ -31,6 +31,11 @@ function ActiveQueueGate({ performanceId }: { performanceId: number }) {
           <p>다른 창에서 이미 예매를 진행하고 있어요.</p>
           <Link className="booking-select-retry" to={paths.home()} replace>홈으로 가기</Link>
         </div>
+      ) : state.status === 'taken-over' ? (
+        <div className="booking-select-message" role="alert">
+          <p>다른 창에서 예매를 시작해서 이 창의 예매가 끝났어요.</p>
+          <Link className="booking-select-retry" to={paths.home()} replace>홈으로 가기</Link>
+        </div>
       ) : (
         <div className="booking-select-message" role="alert">
           <p>{state.message}</p>
