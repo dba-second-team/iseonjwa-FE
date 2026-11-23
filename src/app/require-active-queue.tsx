@@ -1,11 +1,11 @@
-import { Navigate, Outlet, useLocation, useParams } from 'react-router'
+import { Link, Navigate, Outlet, useLocation, useParams } from 'react-router'
 import { BackHeader } from '../components/layouts/back-header'
 import { paths } from '../config/paths'
 import { useActiveAdmission } from '../features/queue/hooks/use-active-admission'
 import { parseId } from '../utils/parse-id'
 import './routes/booking-select.css'
 
-/** 예매 작업열에 입장한 회원만 회차 선택부터 예매 확인까지 볼 수 있게 한다 */
+/** 예매 작업열에 입장한 탭에서만 회차 선택부터 예매 확인까지 볼 수 있게 한다 */
 export function RequireActiveQueue() {
   const params = useParams()
   const performanceId = parseId(params.performanceId)
@@ -19,13 +19,18 @@ function ActiveQueueGate({ performanceId }: { performanceId: number }) {
   const { state, retry } = useActiveAdmission(performanceId, location.pathname)
 
   if (state.status === 'admitted') return <Outlet />
-  if (state.status === 'not-admitted') return <Navigate to={paths.booking.queue(performanceId)} replace />
+  if (state.status === 'kicked') return <Navigate to={paths.performance(performanceId)} replace />
 
   return (
     <main className="page booking-select-page">
       <BackHeader title="예매하기" fallbackTo={paths.performance(performanceId)} />
       {state.status === 'checking' ? (
         <p className="booking-select-message">예매 화면을 준비하는 중이에요.</p>
+      ) : state.status === 'other-window' ? (
+        <div className="booking-select-message" role="alert">
+          <p>다른 창에서 이미 예매를 진행하고 있어요.</p>
+          <Link className="booking-select-retry" to={paths.home()} replace>홈으로 가기</Link>
+        </div>
       ) : (
         <div className="booking-select-message" role="alert">
           <p>{state.message}</p>

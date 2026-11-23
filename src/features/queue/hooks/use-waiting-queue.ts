@@ -2,9 +2,11 @@ import { useCallback, useEffect, useState } from 'react'
 import { ApiError, getErrorMessage } from '../../../lib/api-error'
 import { enterActiveQueue } from '../api/enter-active-queue'
 import { getQueueStatus } from '../api/get-queue-status'
+import { leaveQueue } from '../api/leave-queue'
 import { registerWaiting } from '../api/register-waiting'
 import type { QueueState } from '../types'
 import { clearInitialPosition, getQueueProgress } from '../utils/progress'
+import { claimQueue, isQueueOwner, releaseQueue, wasReloadedAt } from '../utils/queue-session'
 
 /** 순번을 다시 물어보는 간격 */
 const POLL_INTERVAL_MS = 2000
@@ -14,6 +16,8 @@ export type WaitingQueueState =
   | { status: 'waiting'; position: number; progress: number }
   | { status: 'ready' }
   | { status: 'other-performance' }
+  | { status: 'other-window' }
+  | { status: 'taken-over' }
   | { status: 'error'; message: string }
 
 function isApiError(error: unknown, code: string): boolean {
@@ -23,14 +27,16 @@ function isApiError(error: unknown, code: string): boolean {
 /**
  * 대기열 진입 → 순번 폴링 → 작업열 입장
  *
- * 1. 상태를 먼저 조회 (새로고침해도 기존 순번을 이어받기 위해)
- * 2. 대기열에 없으면(404 QUEUE_ENTRY_NOT_FOUND) 그때 등록
+ * 1. 이 탭이 이미 등록한 대기열이 있으면 상태를 이어서 조회
+ * 2. 없으면 등록. 같은 회원이 다른 탭에서 이미 등록했으면(409 ALREADY_IN_QUEUE) 막는다
+ *    새로고침한 탭은 이전 화면이 보낸 퇴장 요청보다 등록이 먼저 도착할 수 있어서 직접 빠진 뒤 다시 등록
  * 3. canEnter가 true가 될 때까지 일정 간격으로 상태 조회
  * 4. canEnter가 true면 작업열 입장 요청, 성공하면 ready
  *    (그 사이 자리가 찼으면 409 CANNOT_ENTER_ACTIVE_QUEUE가 오므로 계속 대기)
  */
 export function useWaitingQueue(performanceId: number) {
   const [retryCount, setRetryCount] = useState(0)
+  const [takeOver, setTakeOver] = useState(false)
   const [state, setState] = useState<WaitingQueueState>({ status: 'loading' })
 
   useEffect(() => {
@@ -38,18 +44,36 @@ export function useWaitingQueue(performanceId: number) {
     const { signal } = controller
     let timer: ReturnType<typeof setTimeout> | undefined
 
-    async function enterOrResume(): Promise<QueueState> {
-      try {
-        return await getQueueStatus({ signal })
-      } catch (error) {
-        if (!isApiError(error, 'QUEUE_ENTRY_NOT_FOUND')) throw error
+    async function register() {
+      await registerWaiting(performanceId, { signal })
+      claimQueue(performanceId)
+    }
+
+    /** 이 탭이 대기열 주인이 되면 상태를, 다른 탭이 주인이면 null을 돌려준다 */
+    async function enterOrResume(): Promise<QueueState | null> {
+      if (isQueueOwner(performanceId)) {
+        try {
+          return await getQueueStatus({ signal })
+        } catch (error) {
+          if (!isApiError(error, 'QUEUE_ENTRY_NOT_FOUND')) throw error
+          releaseQueue()
+        }
+      }
+
+      if (takeOver || wasReloadedAt(window.location.pathname)) {
+        await leaveQueue()
+        await register()
+        return getQueueStatus({ signal })
       }
 
       try {
-        await registerWaiting(performanceId, { signal })
+        await register()
       } catch (error) {
-        // 다른 탭에서 먼저 등록한 경우는 이미 대기 중이니 그대로 진행
         if (!isApiError(error, 'ALREADY_IN_QUEUE')) throw error
+        const queue = await getQueueStatus({ signal })
+        if (signal.aborted) return null
+        setState({ status: queue.performanceId === performanceId ? 'other-window' : 'other-performance' })
+        return null
       }
       return getQueueStatus({ signal })
     }
@@ -68,13 +92,14 @@ export function useWaitingQueue(performanceId: number) {
     }
 
     /** 화면 상태를 바꾸고, 계속 폴링해야 하면 true */
-    async function apply(queue: QueueState): Promise<boolean> {
-      if (signal.aborted) return false
+    async function apply(queue: QueueState | null): Promise<boolean> {
+      if (queue === null || signal.aborted) return false
       if (queue.performanceId !== performanceId) {
+        releaseQueue()
         setState({ status: 'other-performance' })
         return false
       }
-      // 이미 작업열에 있으면(새로고침 등) 바로 입장
+      // 이 탭이 이미 작업열에 들어가 있으면 바로 입장
       if (queue.status === 'ACTIVE') {
         ready()
         return false
@@ -101,6 +126,12 @@ export function useWaitingQueue(performanceId: number) {
 
     function handleError(error: unknown) {
       if (signal.aborted) return
+      // 다른 탭에서 이 창의 대기를 가져간 경우
+      if (isApiError(error, 'QUEUE_ENTRY_NOT_FOUND')) {
+        releaseQueue()
+        setState({ status: 'taken-over' })
+        return
+      }
       setState({ status: 'error', message: getErrorMessage(error) })
     }
 
@@ -126,12 +157,19 @@ export function useWaitingQueue(performanceId: number) {
       controller.abort()
       clearTimeout(timer)
     }
-  }, [performanceId, retryCount])
+  }, [performanceId, retryCount, takeOver])
 
   const retry = useCallback(() => {
     setState({ status: 'loading' })
     setRetryCount(count => count + 1)
   }, [])
 
-  return { state, retry }
+  /** 다른 탭의 대기를 끝내고 이 탭에서 처음부터 다시 대기한다 */
+  const startHere = useCallback(() => {
+    setState({ status: 'loading' })
+    setTakeOver(true)
+    setRetryCount(count => count + 1)
+  }, [])
+
+  return { state, retry, startHere }
 }
