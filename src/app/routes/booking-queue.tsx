@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router'
 import ticketWaiting from '../../assets/booking/ticket-waiting.svg'
 import { BackHeader } from '../../components/layouts/back-header'
 import { paths } from '../../config/paths'
+import { useLeaveQueueOnPageHide } from '../../features/queue/hooks/use-leave-queue-on-page-hide'
 import { useWaitingQueue, type WaitingQueueState } from '../../features/queue/hooks/use-waiting-queue'
 import { parseId } from '../../utils/parse-id'
 import './booking-queue.css'
@@ -24,6 +25,7 @@ type BookingQueueProps = {
 function BookingQueue({ performanceId, scheduleId }: BookingQueueProps) {
   const navigate = useNavigate()
   const { state, retry } = useWaitingQueue(performanceId)
+  useLeaveQueueOnPageHide(state.status === 'waiting')
 
   // 입장할 수 있게 되면 구역 선택으로. 뒤로 가기로 대기 화면에 돌아오지 않게 replace
   useEffect(() => {

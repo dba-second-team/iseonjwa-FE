@@ -1,4 +1,5 @@
 import { createBrowserRouter } from 'react-router'
+import { RequireActiveQueue } from './require-active-queue'
 import { RequireAuth } from './require-auth'
 import { BookingConfirmRoute } from './routes/booking-confirm'
 import { BookingLayout } from './routes/booking-layout'
@@ -49,9 +50,14 @@ export const router = createBrowserRouter([
             element: <BookingLayout />,
             children: [
               { path: 'queue', element: <BookingQueueRoute /> },
-              { path: 'sections', element: <BookingSectionsRoute /> },
-              { path: 'seats', element: <BookingSeatsRoute /> },
-              { path: 'confirm', element: <BookingConfirmRoute /> },
+              {
+                element: <RequireActiveQueue />,
+                children: [
+                  { path: 'sections', element: <BookingSectionsRoute /> },
+                  { path: 'seats', element: <BookingSeatsRoute /> },
+                  { path: 'confirm', element: <BookingConfirmRoute /> },
+                ],
+              },
             ],
           },
           { path: 'reservations/:reservationId/complete', element: <ReservationCompleteRoute /> },
