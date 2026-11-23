@@ -16,6 +16,7 @@ import { SignupRoute } from './routes/signup'
 import { AdminPerformanceNewRoute } from './routes/admin-performance-new'
 import { AdminPerformancesRoute } from './routes/admin-performances'
 import { AdminReservationsRoute } from './routes/admin-reservations'
+import { AdminRefundsRoute } from './routes/admin-refunds'
 import { RequireAdmin } from './require-admin'
 
 
@@ -36,6 +37,7 @@ export const router = createBrowserRouter([
           { path: 'admin/performances', element: <AdminPerformancesRoute /> },
           { path: 'admin/performances/new', element: <AdminPerformanceNewRoute /> },
           { path: 'admin/performances/:performanceId/reservations', element: <AdminReservationsRoute /> },
+          { path: 'admin/performances/:performanceId/refunds', element: <AdminRefundsRoute /> },
         ],
       },
       {
